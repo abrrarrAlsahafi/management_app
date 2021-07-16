@@ -5,7 +5,7 @@ class CustomDropDown extends StatelessWidget {
   final int value;
   final String hint;
   final String errorText;
-  final List<DropdownMenuItem> items;
+  final List items;
   final Function onChanged;
 
   const CustomDropDown(

@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:management_app/app_theme.dart';
 import 'package:management_app/model/app_model.dart';
 import 'package:management_app/model/user.dart';
-import 'package:management_app/services/emom_api.dart';
 import 'package:management_app/widget/content_translate.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../bottom_bar.dart';
-import '../main.dart';
-import 'login_page.dart';
+
+import '../online_root.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key key}) : super(key: key);
@@ -25,20 +20,20 @@ class _ProfileState extends State<Profile> {
   bool status = false;
   bool isLogout=false;
   bool _disposed = false;
-  Geolocator geolocator = Geolocator();
-  String _latitude = "24.7348936";
-  String _longitude = "46.783085899999996";
-  bool _isGettingLocation;
+  //Geolocator geolocator = Geolocator();
+ // String _latitude = "24.7348936";
+  //String _longitude = "46.783085899999996";
+  //bool _isGettingLocation;
   var val = AppModel().locale == 'ar' ? langList.first : langList.last;
 
   var a = 1.1;
 
   void initState() {
     super.initState();
-    _isGettingLocation = false;
-    _getCurrentLocation();
+   // _isGettingLocation = false;
+    //_getCurrentLocation();
   }
-
+/*
   _getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
@@ -58,7 +53,7 @@ class _ProfileState extends State<Profile> {
     print(
         "latt ${addresses.first.coordinates.longitude.toString()} ${addresses.first.coordinates.latitude.toString()}");
   }
-
+*/
   @override
   void dispose() {
     _disposed = true;
@@ -322,7 +317,12 @@ setState(() {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               ):Center(
-                child: _isGettingLocation == null
+                child:QrImage(
+                  data:
+                  "${Provider.of<UserModel>(context).user.uid + num.parse(DateTime.now().microsecond.toString())}",
+                  version: QrVersions.auto,
+                  size: MediaQuery.of(context).size.width / 1.2,
+                ) /*_isGettingLocation == null
                     ? Expanded(
                       child: ContentApp(
                           code: 'loding',
@@ -346,7 +346,7 @@ setState(() {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12)),
                         ),
-              )),
+              */)),
           SizedBox(height: MediaQuery.of(context).size.height/44),
           Divider(color: Colors.grey),
           SizedBox(height: MediaQuery.of(context).size.height/44),

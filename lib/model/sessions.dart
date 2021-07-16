@@ -1,6 +1,3 @@
-
-import 'package:management_app/model/folowing.dart';
-
 class Sessions {
   int id;
   String name;
@@ -13,13 +10,13 @@ class Sessions {
 
   Sessions(
       {this.id,
-        this.name,
-        this.date,
-        this.editor,
-        this.manager,
-        this.members,
-        this.topics,
-        this.stage});
+      this.name,
+      this.date,
+      this.editor,
+      this.manager,
+      this.members,
+      this.topics,
+      this.stage});
 
   Sessions.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -28,13 +25,13 @@ class Sessions {
     editor = json['editor'];
     manager = json['manager'];
     if (json['members'] != null) {
-      members = new List<Members>();
+      members = []; //new List<Members>();
       json['members'].forEach((v) {
         members.add(new Members.fromJson(v));
       });
     }
     if (json['topics'] != null) {
-      topics = new List<Topics>();
+      topics = []; //new List<Topics>();
       json['topics'].forEach((v) {
         print("v.. $v");
         topics.add(new Topics.fromJson(v));
@@ -85,7 +82,6 @@ class Topics {
     return data;
   }
 }
-
 
 class Members {
   String name;

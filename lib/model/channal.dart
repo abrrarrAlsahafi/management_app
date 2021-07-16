@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:management_app/model/massege.dart';
 import 'package:management_app/services/emom_api.dart';
-import 'package:provider/provider.dart';
 
-import 'folowing.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 class Chat {
@@ -31,7 +28,6 @@ class Chat {
       this.members,
       this.adminId,
       this.isChat});
-
 
   Chat.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -73,76 +69,77 @@ class ChatModel with ChangeNotifier {
   List<Chat> chatsList;
   ChatModel();
 
-    getChannalsHistory() async {
+  getChannalsHistory() async {
     chatsList = await EmomApi().chatHistory();
     orderByLastAction();
     notifyListeners();
   }
-   orderByLastAction(){
-   chatsList.sort((a,b)
-   { // print('${a.lastDate} ${b.lastDate} , ${b.lastDate.compareTo(a.lastDate)}');
-      return// b.dat=='None' || a.lastMessage=='None'?0:
-      b.lastDate.compareTo(a.lastDate);
-   });
-  // notifyListeners();
-   }
+
+  orderByLastAction() {
+    chatsList.sort((a, b) {
+      // print('${a.lastDate} ${b.lastDate} , ${b.lastDate.compareTo(a.lastDate)}');
+      return // b.dat=='None' || a.lastMessage=='None'?0:
+          b.lastDate.compareTo(a.lastDate);
+    });
+    // notifyListeners();
+  }
 
   addNewChat(chat) => chatsList.add(chat);
   createChannal(chat, isCaht, isPrivate) async {
     // chatsList.removeLast();
-  int id =  await EmomApi().createNewChannal(chat.name, chat.members, isCaht,isPrivate);
-         await getChannalsHistory();
- // print('id new massege = $id');
-  notifyListeners();
-  return id;
+    int id = await EmomApi()
+        .createNewChannal(chat.name, chat.members, isCaht, isPrivate);
+    await getChannalsHistory();
+    // print('id new massege = $id');
+    notifyListeners();
+    return id;
   }
 
   chatLastMassege(i, newmassege) => chatsList[i].lastMessage = newmassege;
-  chatMasseges(id){
-    List<Massege> massegContex=List();
-   chatsList.forEach((element) {
-     if(element.id==id){
-       massegContex=element.massegContex;
-     }
-   });
+  chatMasseges(id) {
+    List<Massege> massegContex = [];
+    chatsList.forEach((element) {
+      if (element.id == id) {
+        massegContex = element.massegContex;
+      }
+    });
     return massegContex;
   }
 
-  bool isChat(chatId){
-    bool isChat=false;
-chatsList.where((element) => isChat= element.id==chatId?element.isChat:null);
-  return isChat;
+  bool isChat(chatId) {
+    bool isChat = false;
+    chatsList.where(
+        (element) => isChat = element.id == chatId ? element.isChat : null);
+    return isChat;
   }
 
-  getChannalInformation(channalId){
-    List members=List();
+  getChannalInformation(channalId) {
+    List members = [];
     chatsList.forEach((element) {
-    if(element.id == channalId) members= element.members;
+      if (element.id == channalId) members = element.members;
     });
 
     return members;
-}
+  }
 
-addMember(channelId,memberId) async {
+  addMember(channelId, memberId) async {
     await EmomApi().addMembers(channelId, memberId);
     await getChannalsHistory();
-
-}
+  }
 
   int haveChatRoom(int senderId) {
     int ischat;
 
     chatsList.forEach((chat) {
-     // print(chat.members);
-     if(chat.isChat) {
-        if (chat.members.first == senderId ||chat.members.last == senderId) {
+      // print(chat.members);
+      if (chat.isChat) {
+        if (chat.members.first == senderId || chat.members.last == senderId) {
           print(chat.id);
-          ischat= chat.id;
+          ischat = chat.id;
         }
       }
     });
 
-   return ischat;
+    return ischat;
   }
-
 }

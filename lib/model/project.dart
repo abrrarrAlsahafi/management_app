@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:management_app/model/folowing.dart';
 import 'package:management_app/services/emom_api.dart';
-import 'package:provider/provider.dart';
 
 class Project {
   int id;
@@ -10,7 +8,8 @@ class Project {
   String managerName;
   int noOfTask;
 
-  Project({this.id, this.name, this.managerId, this.managerName, this.noOfTask});
+  Project(
+      {this.id, this.name, this.managerId, this.managerName, this.noOfTask});
 
   Project.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -28,31 +27,31 @@ class Project {
     data['manager_name'] = this.managerName;
     data['no_of_task'] = this.noOfTask;
     return data;
-  }}
+  }
+}
 
 class ProjectModel with ChangeNotifier {
   List<Project> userProject;
   ProjectModel();
 
   getUserProjects() async {
-    userProject= await EmomApi().getMyProjects();
+    userProject = await EmomApi().getMyProjects();
     return userProject;
   }
 
   taskCount(proId) async {
-   List tasks=await EmomApi().getUserTask(proId);
+    List tasks = await EmomApi().getUserTask(proId);
     return tasks.length;
   }
 
-  nameOfProject(pid){
-    String nameProject;//=List();
+  nameOfProject(pid) {
+    String nameProject; //=List();
     userProject.forEach((element) {
-    if(element.id==pid)  {
-       nameProject=element.name;
+      if (element.id == pid) {
+        nameProject = element.name;
       }
     });
 
     return nameProject;
   }
-
 }

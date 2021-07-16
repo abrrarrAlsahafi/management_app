@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/screenutil.dart';
 import 'package:management_app/widget/content_translate.dart';
 import '../app_theme.dart';
 
@@ -18,7 +17,6 @@ class MyTabBar extends StatelessWidget {
     return Container(
       decoration: new BoxDecoration(
         color:MyTheme.kPrimaryColorVariant, //Colors.white, //background color of box
-
       boxShadow: [
       BoxShadow(
       color: Colors.grey.withOpacity(0.5),
@@ -48,7 +46,7 @@ class MyTabBar extends StatelessWidget {
                     ContentApp(
                       code: "chat",
                       style: TextStyle(
-                        fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
+                        fontSize: 10,
                         color: Colors.white,
                         //MyTheme.kPrimaryColorVariant,
                         fontWeight: FontWeight.w600,
@@ -107,7 +105,7 @@ class MyTabBar extends StatelessWidget {
                     ContentApp(
                       code: "tasks",
                       style: TextStyle(
-                        fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
+                        fontSize:10,
                         color: Colors.white, //MyTheme.kPrimaryColorVariant,
 
                         fontWeight: FontWeight.w600,
@@ -133,7 +131,7 @@ class MyTabBar extends StatelessWidget {
                     ContentApp(
                       code: "bords",
                       style: TextStyle(
-                        fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
+                        fontSize:10,
                         color: Colors.white, //MyTheme.kPrimaryColorVariant,
                         fontWeight: FontWeight.w600,
                       ),

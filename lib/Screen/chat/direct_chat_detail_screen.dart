@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:management_app/Screen/chat/chat_info.dart';
+import 'package:management_app/bottom_bar.dart';
 import 'package:management_app/generated/I10n.dart';
 import 'package:management_app/model/channal.dart';
 import 'package:management_app/model/massege.dart';
@@ -92,21 +93,21 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
           });
         }
       });*/
-      getMasseges();
 
      // print('myMessages $myMessages');
 
       //myMessages = Provider.of<ChatModel>(context, listen: false).chatMasseges( widget.mid);
+     // newDirctMassege();
 
-      timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
-        if (Provider.of<NewMessagesModel>(context, listen: false)
-                .newMessages
-                .totalNewMessages >
-            0) {
+      timer = Timer.periodic(Duration(seconds: 5), (Timer t) {
+       // getMasseges();
+        newDirctMassege();
+        /*  if (//Provider.of<NewMessagesModel>(context, listen: false).newMessages.totalNewMessages >
+        totalMessges>    0) {
 
           this.newDirctMassege();
           // setState(() {});
-        }
+        }*/
       });
     }
   }
@@ -121,6 +122,7 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
   }
 
   getMasseges() async {
+
     if (Provider.of<NewMessagesModel>(context, listen: false)
             .newMessages
             .totalNewMessages >
@@ -142,7 +144,8 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
   newDirctMassege() async {
     myMessages = await Provider.of<MassegesContent>(context, listen: false)
         .getMassegesContext(widget.mid);
-    setState(() {});
+   // print('${myMessages.last.text}');
+   setState(() {});
   }
 
   var id;
@@ -305,7 +308,7 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
         appBar: _myDetailAppBar(),
         body:  FutureBuilder<void>(builder: (BuildContext context, snapshot) {
           if (snapshot.hasData ||   myMessages== null) {
-             print('myMessages }');
+            // print('myMessages }');
             return Center(
               child: CircularProgressIndicator(
                 backgroundColor: Color(0xff336699),
@@ -398,7 +401,7 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
 
 
   buildBody() {
-     print("new chat ${widget.newChat}");
+    // print("new chat ${widget.newChat}");
     return GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: Container(
@@ -431,7 +434,7 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
   }
 
   _onBackPressed() {
-    if(widget.newChat) Navigator.pushReplacementNamed(context, "/a");
-    else Navigator.pushReplacementNamed(context, "/a");
+    if(widget.newChat) Navigator.pushReplacementNamed(context, "/root");
+    else Navigator.pushReplacementNamed(context, "/root");
   }
 }

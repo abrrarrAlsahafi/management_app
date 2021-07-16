@@ -7,9 +7,10 @@ class SlideRightBackgroundWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      //margin: EdgeInsets.only(right: 3),
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
+        //borderRadius: BorderRadius.circular(4.0),
         color: MyTheme.kPrimaryColorVariant,
       ),
       child:// Align(
@@ -20,8 +21,7 @@ class SlideRightBackgroundWidget extends StatelessWidget {
               SizedBox(width: 10),
               Icon(Icons.reply, color: Colors.white),
               SizedBox(width: 10),
-              ContentApp(code:'reply' ,
-
+              ContentApp(code:'reply',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -30,9 +30,6 @@ class SlideRightBackgroundWidget extends StatelessWidget {
               ),
             ],
           ),
-         // alignment: MyApp().local == Locale('en')?
-        //   Alignment.centerLeft:
-        //  Alignment.centerRight),
     );
   }
 }

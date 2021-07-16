@@ -63,6 +63,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final focus = FocusScope.of(context);
+
     return Scaffold(
         backgroundColor: const Color(0xfff3f6fc),
         body: ListView(
@@ -137,6 +139,9 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: TextFormField(
+                      textInputAction: TextInputAction.next,
+                      onEditingComplete: () => focus.nextFocus(),
+
                       keyboardType: TextInputType.emailAddress,
                       onChanged: (str) {
                         setState(() {
@@ -150,7 +155,9 @@ class _LoginPageState extends State<LoginPage> {
                        else return null;
                       },
                       onSaved: (String value) {
+
                         model.username = value;
+                       // print(value);
                       },
                       cursorColor: const Color(0xff336699),
                       // onChanged: ()=>,
@@ -174,6 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: TextFormField(
+                   //
                     controller: passController,
                     obscureText: _obscureText,
                     cursorColor: const Color(0xff336699),
@@ -240,11 +248,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> validateInput() async {
+    print("user mame .. ${model.username}");
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       dynamic result =
           await EmomApi().login(context,username: model.username, password: model.pass);
-      //print('ttt ${result.pass}');
+     // print('ttt ${result}');
       if (result.runtimeType != User) {
         if(result.toString().contains('Failed host')){
           setState(() {
@@ -254,16 +263,14 @@ class _LoginPageState extends State<LoginPage> {
           //print('network connct');
         }else{
         setState(() {
-          error = S
-              .of(context)
-              .loginValidatin; //'The password or username is incorrect';
+          error=S.of(context).loginValidatin; //'The password or username is incorrect';
         });}
       } else {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         UserModel userModel = Provider.of<UserModel>(context, listen: false);
         result.pass=model.pass;
         userModel.saveUser(result);
-       // setState(() {   isLoggedIn = true;  });
+       //setState(() {   isLoggedIn = true;  });
         AppModel().config(context);
         Navigator.of(context).pushNamed('/a');
         if (_isSelected) {

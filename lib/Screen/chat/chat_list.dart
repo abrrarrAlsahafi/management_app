@@ -43,7 +43,8 @@ class _ChatListState extends State<ChatList> with TickerProviderStateMixin {
     // TODO: implement initState
     super.initState();
     newmass =
-    Provider.of<NewMessagesModel>(context, listen: false).newMessages ==
+   // Provider.of<NewMessagesModel>(context, listen: false).newMessages
+      totalMessges  ==
         null
         ? 0
         : Provider.of<NewMessagesModel>(context, listen: false)
@@ -301,7 +302,7 @@ class _CreateGruopeState extends State<CreateGruope> {
     widget.members.add(admin);
     //widget.members.sort();
     // items.add(MessageItem(admin, false));
-    print("member ${widget.members.length}");
+    //print("member ${widget.members.length}");
     items = List.generate(
       widget.members.length,
       (i) => MessageItem(widget.members[i], false),

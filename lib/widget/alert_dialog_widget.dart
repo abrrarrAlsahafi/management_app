@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:management_app/app_theme.dart';
 import 'package:management_app/generated/I10n.dart';
 import 'package:management_app/model/folowing.dart';
-import 'package:management_app/model/note.dart';
 import 'package:management_app/model/task.dart';
-import 'package:management_app/model/user.dart';
 import 'package:management_app/services/emom_api.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +37,7 @@ class _AlertDialogPMState extends State<AlertDialogPM> {
   Widget build(BuildContext context) {
     return AlertDialog(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            borderRadius: BorderRadius.all(Radius.circular(3.0))),
         contentPadding: EdgeInsets.only(top: 10.0),
         titleTextStyle: MyTheme.bodyText1,
         title: widget.title,
@@ -49,8 +47,8 @@ class _AlertDialogPMState extends State<AlertDialogPM> {
             color: const Color(0xFFFFFF),
             borderRadius: new BorderRadius.all(new Radius.circular(38.0)),
           ),
-          width: MediaQuery.of(context).size.width / 5, //double.minPositive,
-          height: MediaQuery.of(context).size.height / 2.3,
+          width: MediaQuery.of(context).size.width / 2, //double.minPositive,
+          height: MediaQuery.of(context).size.height / 2,
           child: widget.dearection
              // ? Provider.of<UserModel>(context, listen: false).user.isAdmin
                   ? Column(
@@ -170,12 +168,10 @@ class _AlertDialogPMState extends State<AlertDialogPM> {
               Container(
                 margin: EdgeInsets.zero,
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
+               // padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
                 decoration: BoxDecoration(
                   color: MyTheme.kUnreadChatBG,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(32.0),
-                      bottomRight: Radius.circular(32.0)),
+                 // borderRadius: BorderRadius.only( bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
                 ),
                 child: TextButton(
                   onPressed: () async {

@@ -48,7 +48,6 @@ class MassegesContent extends ChangeNotifier {
     //await EmomApi().getMassegesContent(mid);
   }
 
-
   gitAllMessagees(context) {
     Provider.of<ChatModel>(context, listen: false)
         .chatsList
@@ -68,10 +67,7 @@ class NewMessagesModel extends ChangeNotifier {
 
   newMessagesList(context) async {
     newMessages = await EmomApi().newMasseges();
-    if (newMessages.totalNewMessages > 0) {
-      await Provider.of<ChatModel>(context, listen: false)
-          .getChannalsHistory();
-    }
+   // if (newMessages.totalNewMessages > 0) {await Provider.of<ChatModel>(context, listen: false).getChannalsHistory();}
     //sortchatlist
     // print("total messege ${newMessages.totalNewMessages}");
     return newMessages.totalNewMessages;
@@ -92,7 +88,7 @@ class NewMessagesModel extends ChangeNotifier {
 }
 
 class NewMessages {
-  int totalNewMessages=0;
+  int totalNewMessages = 0;
   List<ChannelMessages> channelMessages;
 
   NewMessages({this.totalNewMessages, this.channelMessages});
@@ -102,7 +98,7 @@ class NewMessages {
     totalNewMessages =
         json['total_new_messages']; //int.parse(json['total_new_messages']);
     if (json['channel_messages'] != null) {
-      channelMessages = new List<ChannelMessages>();
+      channelMessages = []; //new List<ChannelMessages>();
       json['channel_messages'].forEach((v) {
         channelMessages.add(new ChannelMessages.fromJson(v));
       });

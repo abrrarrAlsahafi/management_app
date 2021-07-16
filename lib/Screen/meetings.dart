@@ -115,13 +115,13 @@ class _MeetingsScreenState extends State<MeetingsScreen> {
           itemCount: meetings.length,
           itemBuilder: (context, index) {
            // isAction=false;
-           String st= checkStage(meetings[index]);
-          bool action=checkAction(meetings[index]);
+           String st = checkStage(meetings[index]);
+           bool action = checkAction(meetings[index]);
           // print("stage.. ${st} $isAction");
             topicExpand = List.generate(meetings[index].topics.length, (index) => false);
             return// isMember ?
             Container(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Dismissible(
                       key: Key('${meetings[index].name}'),
                       confirmDismiss: (direction) async {
@@ -173,9 +173,9 @@ class _MeetingsScreenState extends State<MeetingsScreen> {
                           });
                         },
                         child: Container(
-                          height: meetings[index].topics.length * 110.0,
+                          height: meetings[index].topics.length * 88.0,
                           //Topics item
-                          padding: EdgeInsets.all(8),
+                         // padding: EdgeInsets.all(4),
                           child: ListView.separated(
                               itemBuilder: (BuildContext context, i) {
                                 return TextButton(
@@ -186,7 +186,7 @@ class _MeetingsScreenState extends State<MeetingsScreen> {
                                               item: meetings[index],
                                               index: i))),
                                   child: Container(
-                                    padding: EdgeInsets.all(4),
+                                    //padding: EdgeInsets.all(4),
                                     decoration: BoxDecoration(
                                         boxShadow: [
                                           BoxShadow(color: Colors.black26)

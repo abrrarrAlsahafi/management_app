@@ -17,7 +17,7 @@ class MembertImage extends StatelessWidget {
 
 
   buildImage(item) {
-    if(item.runtimeType==Folowing){
+    //if(item.runtimeType==Folowing){
         if(item.image=='False') {
           print("image ${item.image}");
         return  falseImage();
@@ -45,7 +45,7 @@ class MembertImage extends StatelessWidget {
             ),
           );
         }
-    }else{
+ /*   }else{
 
     if(item.runtimeType==Chat){
       print('item run type ${item.isChat}');
@@ -65,7 +65,7 @@ class MembertImage extends StatelessWidget {
       );
     }
    // if(item)
-    }
+    }*/
   }
 
   falseImage(){

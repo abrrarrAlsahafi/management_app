@@ -6,7 +6,6 @@ import 'package:management_app/services/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserModel with ChangeNotifier {
-
   //final AuthenticationService _authenticationService = locator<AuthenticationService>();
 
   UserModel() {
@@ -34,7 +33,8 @@ class UserModel with ChangeNotifier {
   Future<void> saveUser(User user) async {
     getUser();
 
-    this.user = user;print('save user ${user.pass}');
+    this.user = user;
+    print('save user ${user.pass}');
     final LocalStorage storage = LocalStorage("emomApp");
     try {
       // save to Preference
@@ -44,7 +44,7 @@ class UserModel with ChangeNotifier {
       final ready = await storage.ready;
       if (ready) {
         await storage.setItem(kLocalKey["userInfo"], user);
-       // print("save ${user.isAdmin}");
+        // print("save ${user.isAdmin}");
       }
     } catch (err) {
       print(err);
@@ -101,29 +101,27 @@ class UserModel with ChangeNotifier {
   }
 
   Future<void> logout(context) async {
-
-
     user = null;
     loggedIn = false;
 
-   // final LocalStorage storage = LocalStorage("emomApp");
+    // final LocalStorage storage = LocalStorage("emomApp");
     try {
-    //  final ready = await storage.ready;
+      //  final ready = await storage.ready;
       //if (ready) {
-       // await storage.deleteItem(kLocalKey["userInfo"]);
-       // await storage.deleteItem(kLocalKey["shippingAddress"]);
-        //await storage.deleteItem(kLocalKey["recentSearches"]);
-       // await storage.deleteItem(kLocalKey["wishlist"]);
-        //await storage.deleteItem('token');
+      // await storage.deleteItem(kLocalKey["userInfo"]);
+      // await storage.deleteItem(kLocalKey["shippingAddress"]);
+      //await storage.deleteItem(kLocalKey["recentSearches"]);
+      // await storage.deleteItem(kLocalKey["wishlist"]);
+      //await storage.deleteItem('token');
 
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.remove('token');
-        await prefs.setBool('isLoggedIn', false);
-        await prefs.setBool('remember', false);
-        await prefs.remove('email');
-        await prefs.remove('pass');
-        await prefs.clear();
-     // }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('token');
+      await prefs.setBool('isLoggedIn', false);
+      await prefs.setBool('remember', false);
+      await prefs.remove('email');
+      await prefs.remove('pass');
+      await prefs.clear();
+      // }
       await EmomApi().logOut(
         username: user.username,
         password: user.pass,
@@ -180,20 +178,20 @@ class User {
   UserContext userContext;
   String db;
   String serverVersion;
-  List<int> serverVersionInfo;
+  List serverVersionInfo;
   String name;
   String username;
-  String partnerDisplayName;
+  var partnerDisplayName;
   var companyId;
   var partnerId;
-  String webBaseUrl;
+  var webBaseUrl;
   UserCompanies userCompanies;
   var currencies;
-  String showEffect;
+  var showEffect;
   bool displaySwitchCompanyMenu;
   var cacheHashes;
   var maxTimeBetweenKeysInMs;
-  List<String> webTours;
+  List webTours;
   bool outOfOfficeMessage;
   bool odoobotInitialized;
   var timesheetUom;
@@ -329,7 +327,7 @@ class UserCompanies {
   UserCompanies.fromJson(Map<String, dynamic> json) {
     currentCompany = json['current_company'].cast<int>();
     if (json['allowed_companies'] != null) {
-      allowedCompanies = new List<List>();
+      allowedCompanies = []; //new List<List>();
       json['allowed_companies'].forEach((v) {
         allowedCompanies.add(new List());
       });

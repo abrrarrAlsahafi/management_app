@@ -13,7 +13,9 @@ class SlideLeftWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0), color: Color(0xffe9a14e)),
+          //borderRadius: BorderRadius.circular(4.0),
+          color: Color(0xffe9a14e)
+      ),
       child: //Align(
           //child:
       Column(

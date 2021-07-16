@@ -10,7 +10,6 @@ import 'package:management_app/model/sessions.dart';
 import 'package:management_app/model/task.dart';
 import 'package:management_app/model/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,13 +18,20 @@ import 'index.dart';
 class EmomApi implements BaseServices {
   var _client = "https://ewady.com/";
   var _db = 'ewady_production'; //listMember
-  connect() async {
-    // _client = OdooClient('');
-    //  _client.connect().then((version) {
-    //     print("Connected $version");
-    //  });
-  }
+/*  OdooClient  client = OdooClient("http://demo.ewady.com/");//listMember
+  final orpc = OdooClient('http://demo.ewady.com');
+  OdooSession odooSession;
 
+  getSessionId()  async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    odooSession= await orpc.authenticate('ewady_production', '${localStorage.getString('email')}', '${localStorage.getString('pass')}');
+    print("check session id ${ odooSession.isSystem}");
+    print(" session id ${orpc.sessionId}");
+    return orpc.sessionId;
+
+    //odooSession.updateSessionId(newSessionId);
+  }
+*/
   _setHeaders(id) =>
       {
         'Content-Type': 'application/json',
@@ -86,7 +92,7 @@ class EmomApi implements BaseServices {
 
   @override
   Future<void> logOut({username, password}) async {
-    print('$username  $password');
+   // print('$username  $password');
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
     try {
@@ -117,7 +123,7 @@ class EmomApi implements BaseServices {
 
   @override
   Future<dynamic> login(context,{username, password}) async {
-    connect();
+    //getSessionId();
     // print(_client);
     try {
       var response = await http.post("${_client}web/session/authenticate",
@@ -130,7 +136,7 @@ class EmomApi implements BaseServices {
             'Accept': 'application/json'
           }); //_setHeaders());
       updateCookie(response);
-      //print(response.body);
+      //print("response.. ${response.body}");
 
       final body = convert.jsonDecode(response.body);
       if (!response.body.contains("error")) {
@@ -143,7 +149,7 @@ class EmomApi implements BaseServices {
       //  User user
         //Provider.of<UserModel>(context,listen: false).saveUser(user);
 
-        return User.fromJson(body['result']);;
+        return User.fromJson(body['result']);
       } else {
         final body = convert.jsonDecode(response.body);
         return Exception(body["message"] =
@@ -235,10 +241,10 @@ class EmomApi implements BaseServices {
       if (response.statusCode == 200) {
         for (var item in convert.jsonDecode(response.body)["data"]) {
           list.add(Chat.fromJson(item));
-          print("chat item.. ${item}");
+        //  print("chat item.. ${item}");
 
         }
-print("chat list.. ${list}");
+//print("chat list.. ${list}");
       }
 
       return list;
@@ -270,7 +276,7 @@ print("chat list.. ${list}");
       }
       list.forEach((element) async {
         element.notes = await veiwLogNote(tid: element.taskId);
-        print('note ${element.notes}');
+        //print('note ${element.notes}');
       });
 
       return list;
@@ -301,7 +307,7 @@ print("chat list.. ${list}");
 
   @override
   Future<List<Massege>> getMassegesContext(var masgId) async {
-    print(masgId);
+    //print(masgId);
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
     try {
@@ -335,6 +341,7 @@ print("chat list.. ${list}");
   Future<NewMessages> newMasseges() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
+
     try {
       http.Response response = await http.get("${_client}chat/get_new_messages",
           headers: {'Cookie': 'frontend_lang=en_US; session_id=$id'});
@@ -372,7 +379,7 @@ print("chat list.. ${list}");
         String s = iReg.allMatches(strNum).map((m) => m.group(0))
             .join(' ')
             .substring(4);
-        print("body: ${s}");
+     //   print("body: ${s}");
         return int.parse(s);
       }
     } catch (e) {
@@ -390,7 +397,7 @@ print("chat list.. ${list}");
             'Cookie': 'frontend_lang=en_US; session_id=$id'});
       List<Project> myProject =[];
       // final body = json.decode(response.body);
-      print(response);
+      //print(response);
       if (response.statusCode == 200) {
         for (var item in convert.jsonDecode(response.body)["data"]) {
           myProject.add(Project.fromJson(item));
@@ -403,24 +410,29 @@ print("chat list.. ${list}");
   }
 
   Future<List<Boards>> getMyBoards() async {
+    print(';;kl;lklk');
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
+    print('id $id');
     try {
       http.Response response = await http.get(
           "${_client}mom/get_my_boards",
           headers: {
             'Cookie': 'frontend_lang=en_US; session_id=$id'});
       List<Boards> myBoards = List();
-      //print("item.... ${response.body}");
+      print("item.... ${response.statusCode}");
 
       // final body = json.decode(response.body);
       if (response.statusCode == 200) {
         for (var item in convert.jsonDecode(response.body)["boards"]) {
           myBoards.add(Boards.fromJson(item));
         }
+        print(myBoards.isEmpty);
+        return myBoards;
       }
-      return myBoards;
+
     } catch (e) {
+      print(e.runtimeType);
       rethrow;
     }
   }
@@ -443,7 +455,7 @@ print("chat list.. ${list}");
 
   @override
   Future<void> logNote({message, taskId}) async {
-    print('res ${message} $taskId');
+   // print('res ${message} $taskId');
 
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
@@ -458,7 +470,7 @@ print("chat list.. ${list}");
           'Cookie': 'frontend_lang=en_US; session_id=$id'
         }
     );
-    print('res ${res.body}');
+    //print('res ${res.body}');
   }
 
   @override
@@ -536,7 +548,7 @@ print("chat list.. ${list}");
           list.add(Sessions.fromJson(item));
         }
       }
-       print('list   ${list}');
+    //   print('list   ${list}');
 
       return list;
     } catch (e) {
@@ -561,7 +573,7 @@ print("chat list.. ${list}");
     //  print("response.. ${response.body}");
 
       final body = convert.jsonDecode(response.body)['result']['message'];
-     print("body.. ${body}");
+    // print("body.. ${body}");
       return body.toString();
      /**/ // Network is unreachable,
     } catch (err) {
@@ -642,7 +654,7 @@ print("chat list.. ${list}");
       //  print("response.. ${response.body}");
 
       final body = convert.jsonDecode(response.body)['result']['message'];
-       print("body.. ${body}");
+       //print("body.. ${body}");
       return body.toString();
       /**/ // Network is unreachable,
     } catch (err) {

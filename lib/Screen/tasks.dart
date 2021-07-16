@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:management_app/Screen/create_meeting.dart';
 import 'package:management_app/app_theme.dart';
-import 'package:management_app/model/app_model.dart';
 import 'package:management_app/model/note.dart';
 import 'package:management_app/model/project.dart';
 import 'package:management_app/model/task.dart';
@@ -18,8 +17,7 @@ import 'package:management_app/widget/slide_left.dart';
 import 'package:management_app/widget/slide_right.dart';
 import 'package:provider/provider.dart';
 
-import '../bottom_bar.dart';
-import '../main.dart';
+import '../online_root.dart';
 import 'chat/chat_list.dart';
 
 class TaskScreen extends StatefulWidget {
@@ -114,7 +112,6 @@ class _TaskScreenState extends State<TaskScreen> with TickerProviderStateMixin {
   var result;
   @override
   Widget build(BuildContext context) {
-
     return  WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, addTask);
@@ -171,7 +168,6 @@ class _TaskScreenState extends State<TaskScreen> with TickerProviderStateMixin {
                 ],
               ));
             } else {
-
               return bodyTask();
             }
           })),
@@ -195,100 +191,105 @@ class _TaskScreenState extends State<TaskScreen> with TickerProviderStateMixin {
       }
     });
     print(" bodyTa  $isManeger");
-    return ListTile(
-      //minVerticalPadding: 8.0,
-      title:SearchWidget(
-        controller: controller,
-        onSearchTextChanged: onSearchTextChanged,
-        onPressed: () {
-          controller.clear();
-          onSearchTextChanged('');
-        },
-      ),
-          //: Container(),
-      subtitle: Padding(
-          padding: const EdgeInsets.all(12.0),
+    return  ListView(
+      children: [
+        SearchWidget(
+          controller: controller,
+          onSearchTextChanged: onSearchTextChanged,
+          onPressed: () {
+            controller.clear();
+            onSearchTextChanged('');
+          },
+        ),
+        //: Container(),
+        Container(
+          height:MediaQuery.of(context).size.height/1.26,
           child: ListView.builder(
-              itemCount:  _searchResult.length != 0 ||
-                  controller
-                      .text.isNotEmpty
-                  ? _searchResult.length
-                  : taskList.length,
-              itemBuilder: (context, index)  {
-              //  print("stage ${taskList[index].taskStage}");
-                return Container(
-                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-                    child: Dismissible(
-                        key: Key('${taskList[index].taskName}'),
-                        child: CartTask(
-                          des:taskList[index],
-                          child:TaskNote(note:taskList[index].notes==null?[]:taskList[index].notes),
-                            click: expandList[index],
-                            onTap: () {
-                              setState(() {
-                                expandList[index] =
-                                    expandList[index] ? false : true;
-                              });
-                            },
-                          //  proirty:
-                            listTile:ListTile(
-                                title: Text(_searchResult.length != 0 ||
-                                    controller
-                                        .text.isNotEmpty
-                                    ? _searchResult[index].taskName:
-                                     taskList[ index].taskName,
-                                    style:
-                                    TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                                subtitle: Text(
-                                    "by ${   _searchResult.length != 0 ||
-                                        controller
-                                            .text.isNotEmpty
-                                        ? _searchResult[index].createBy
-                                        : taskList[ index].createBy}  on  ${DateFormat.yMMMd().format(taskList[index].createDate == null ? DateTime.now() : DateTime.parse(taskList[index].createDate))} To ${taskList[index].assignedTo}",
-                                    style: TextStyle(fontSize: 11)))),
-                        background: SlideRightBackgroundWidget(),
-                        secondaryBackground:isManeger? SlideLeftWidget(
-                              icon:isManeger// (Provider.of<UserModel>(context).user.isAdmin)
-                              ? Icons.person_add_outlined
-                              : Icons.redo,
-                          title:'assign'
-                        ):Container(),
-                        confirmDismiss: (direction) async {
-                          if (direction == DismissDirection.endToStart&& isManeger) {
-                            final bool res = await showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialogPM(
-                                      // taskId: taskList[index],
-                                      index: taskList[index],
-                                      dearection: true,
-                                      title: Text(
-                                      "You want to assgin ${taskList[index].taskName} task to?",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ));
-                                });
+                    itemCount:  _searchResult.length != 0 ||
+                        controller
+                            .text.isNotEmpty
+                        ? _searchResult.length
+                        : taskList.length,
+                    itemBuilder: (context, index)  {
+                    //  print("stage ${taskList[index].taskStage}");
+                      return Container(
+                          padding: EdgeInsets.symmetric(vertical: 6),
+                          child: Dismissible(
+                              key: Key('${taskList[index].taskName}'),
+                              child: CartTask(
+                                des:taskList[index],
+                                child:TaskNote(note:taskList[index].notes==null?[]:taskList[index].notes),
+                                  click: expandList[index],
+                                  onTap: () {
+                                    setState(() {
+                                      expandList[index] =
+                                          expandList[index] ? false : true;
+                                    });
+                                  },
+
+                                  listTile:ListTile(
+                                      title: Text(_searchResult.length != 0 ||
+                                          controller
+                                              .text.isNotEmpty
+                                          ? _searchResult[index].taskName:
+                                           taskList[ index].taskName,
+                                          style:
+                                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                      subtitle: Text(
+                                          "by ${   _searchResult.length != 0 ||
+                                              controller
+                                                  .text.isNotEmpty
+                                              ? _searchResult[index].createBy
+                                              : taskList[ index].createBy}  on  ${DateFormat.yMMMd().format(taskList[index].createDate == null ? DateTime.now() : DateTime.parse(taskList[index].createDate))} To ${taskList[index].assignedTo}",
+                                          style: TextStyle(fontSize: 11)))),
+                              background: SlideRightBackgroundWidget(),
+                              secondaryBackground:isManeger? SlideLeftWidget(
+                                    icon:isManeger// (Provider.of<UserModel>(context).user.isAdmin)
+                                    ? Icons.person_add_outlined
+                                    : Icons.redo,
+                                title:'assign'
+                              ):
+                              Container(),
+                              confirmDismiss: (direction) async {
+                                if (direction == DismissDirection.endToStart&& isManeger) {
+                                  final bool res = await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialogPM(
+                                            // taskId: taskList[index],
+                                            index: taskList[index],
+                                            dearection: true,
+                                            title: Text(
+                                            "You want to assgin ${taskList[index].taskName} task to?",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ));
+                                      });
 
 
-                          } else if (direction == DismissDirection.startToEnd) {
-                            final bool res = await showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialogPM(
-                                      index: taskList[index],
-                                      dearection: false,
-                                      title: ContentApp(
-                                            code: "reply",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ));
-                                });
-                          }
-                        })
-                );
-              })),
+                                }
+                                else if (direction == DismissDirection.startToEnd) {
+                                  final bool res = await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialogPM(
+                                            index: taskList[index],
+                                            dearection: false,
+                                            title: ContentApp(
+                                                  code: "reply",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ));
+                                      });
+                                }
+                              })
+                      );
+                    },
+          ),
+        ),
+      ],
     );
   }
 
@@ -381,7 +382,8 @@ class CartTask extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Center(
-                child: click?Icon(Icons.keyboard_arrow_up,size: 12, color:Colors.black26): Icon(Icons.keyboard_arrow_down,size: 12, color:Colors.black26),
+                child: click?Icon(Icons.keyboard_arrow_up,size: 12, color:Colors.black26):
+                Icon(Icons.keyboard_arrow_down,size: 12, color:Colors.black26),
               ),
             ),
             ExpandedSection(
@@ -396,12 +398,12 @@ class CartTask extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      des==null?Container():
+                      des == null?Container():
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(des.description=='false'?'':removeAllHtmlTags(des.description), style: MyTheme.bodyTextTask),
                           ),
-                      des==null?Container():  Row(
+                      des == null? Container():  Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                        children: [
                          Container(height: .5, color:Colors.black12,width: MediaQuery.of(context).size.width/2.7),
@@ -451,9 +453,8 @@ class TaskNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List items = List.generate(note.length, (index) => MessageItem(note[index], true));
-    return
-    Container(
-      height: note.length*90.0,
+    return Container(
+      height: MediaQuery.of(context).size.height/6,
       child: ListView.separated(
         separatorBuilder: (context, index) => Padding(
           padding: EdgeInsets.symmetric(horizontal: 8),
@@ -463,9 +464,10 @@ class TaskNote extends StatelessWidget {
         ),
         itemCount: items.length,
         itemBuilder: (context, index) {
+          print(note[index].body.length);
           final item = items[index];
-          return //note[index].body.length>1?
-          Container(
+      //  if(note[index].body.length<3)
+          return Container(
             padding: EdgeInsets.only(top: 8),
             color: MyTheme.kAccentColor,
             child: ListTile(

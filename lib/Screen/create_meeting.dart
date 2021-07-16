@@ -1,6 +1,7 @@
 import 'package:management_app/Screen/tasks.dart';
 import 'package:management_app/common/constant.dart';
 import 'package:management_app/generated/I10n.dart';
+import 'package:management_app/model/folowing.dart';
 import 'package:management_app/model/project.dart';
 import 'package:management_app/model/task.dart';
 import 'package:management_app/widget/content_translate.dart';
@@ -26,11 +27,14 @@ class _CreateScreenState extends State<CreateScreen> {
   List<DropdownMenuItem<String>> _dropdownMenuItems;
   String projectName;
   List<String> _dropdownItems = [];
+  String _chosenValue;
 
   void initState() {
     super.initState();
     projectName = Provider.of<ProjectModel>(context, listen: false)
         .nameOfProject(widget.projectid);
+
+    _chosenValue =Provider.of<FollowingModel>(context,listen: false).followList[0].name;
     //_dropdownItems=['Project X','Project B'];
     // _dropdownMenuItems = buildDropDownMenuItems(_dropdownItems);
     // _selectedItem=_dropdownMenuItems[0].value;
@@ -53,9 +57,7 @@ class _CreateScreenState extends State<CreateScreen> {
   Widget build(BuildContext context) {
     if (widget.item.runtimeType == Task) return buildTaskForm();
   }
-
   buildTaskForm() {
-
     final focus = FocusScope.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -112,7 +114,24 @@ class _CreateScreenState extends State<CreateScreen> {
                   },
                   hintText: S.of(context).description,
                   suffixIcon: null),
-
+             /*
+              Provider.of<UserModel>(context).user.isAdmin?
+              CustomDropDown(
+                hint:'select',
+                onChanged: (String value) {
+                  setState(() {
+                    _chosenValue = value;
+                  });
+                },
+                value: 1,
+                items:Provider.of<FollowingModel>(context,listen: false).followList.map<DropdownMenuItem>((value) {
+          return DropdownMenuItem(
+          value: _chosenValue,
+          child: Text(value.name,style:TextStyle(color:Colors.black),),
+        );
+      }).toList(),
+              ):Container()
+*/
             ],
           ),
         ),

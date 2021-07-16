@@ -29,13 +29,12 @@ class _BoardScreenState extends State<BoardScreen> {
         getMyProjects();// meetings;
   }
   getMyProjects()  async {
+   // print(',,,,');
     //  WidgetsBinding.instance.addPostFrameCallback((_) async {
     _userDetails = await Provider.of<BoardsModel>(context, listen: false).getUserBoards();
+    setState(() {});
 
     //  Provider.of<ProjectModel>(context, listen: false).projectManegerName(context);
-  setState(() {
-
-  });
 
 
 
@@ -152,7 +151,6 @@ print(_userDetails);
                                           title:
                                               "${_userDetails[index].description?_userDetails[index].description:''}")),
                                   SizedBox(height: 12),
-
                                   Container(
                                       child: SubTitelWidget(
                                           child: Icon(Icons.people_outline_rounded,color: Colors.grey[700], size: 15) ,
@@ -165,6 +163,5 @@ print(_userDetails);
                     })))
       ]),
     );
-
   }
 }

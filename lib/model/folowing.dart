@@ -33,12 +33,16 @@ class FollowingModel extends ChangeNotifier {
   FollowingModel(this.followList);
   getfollowingList(context) async {
     followList = await EmomApi().getfollowingList();
- followList.removeWhere((element)=>element.id==Provider.of<UserModel>(context,listen: false).user.uid);
+    followList.removeWhere((element) =>
+        element.id == Provider.of<UserModel>(context, listen: false).user.uid);
+  }
+  getNameList(){
+   return followList.single.name;//.w((element) => element.name);
   }
 
   List<Folowing> channalMember;
   getMembersChat(ids, adminId) {
-    channalMember = List();
+    channalMember = [];
     //print("test  ${followList.where((food) => food.id == adminId).toList()}");
 
     for (int i = 0; i < followList.length; i++) {
@@ -68,10 +72,11 @@ class FollowingModel extends ChangeNotifier {
     return isAdmin;
   }
 
-  gitUserImage(context){
-     followList.forEach((element) {
-       return element.name==Provider.of<User>(context).name ?element.image:'no image';
-     });
+  gitUserImage(context) {
+    followList.forEach((element) {
+      return element.name == Provider.of<User>(context).name
+          ? element.image
+          : 'no image';
+    });
   }
-
 }
