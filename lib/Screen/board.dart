@@ -75,7 +75,7 @@ class _BoardScreenState extends State<BoardScreen> {
     // setState(() {
     //project.noOfTask=result;
     //});
-    AppModel().config(context);
+    AppModel().config(context, false);
 
     if (result) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

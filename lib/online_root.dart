@@ -288,16 +288,17 @@ class _RootsState extends State<Roots> {
     // TODO: implement initState
     super.initState();
     //DateTime.now().add(Duratio)
-      if(isLoggedIn==null || isLoggedIn==false)  {
-      Future.delayed(const Duration(seconds: 1), () {
+    //  if(isLoggedIn==null || isLoggedIn==false)  {
+    if(isLoggedIn==false|| isLoggedIn==null)
+     { Future.delayed(const Duration(seconds: 1), () {
         cheackIsLoggedIn();
       });
-    }
+   }
     timer= Timer.periodic(Duration(seconds:5), (Timer t) {
-      //print(isLoggedIn);
+    //  print(isLoggedIn);
    if(isLoggedIn!=null){
      if(isLoggedIn){
-       print('the $totalMessges');
+     //  print('the $totalMessges');
        //Future.delayed(Duration(seconds: 1), () {this.checkForNewSharedLists(context);});
      //  timer = Timer.periodic(Duration(minutes: 5), (Timer t) {
          checkForNewSharedLists(context);
@@ -413,7 +414,7 @@ cheackIsLoggedIn() async {
     }
     else{
       Provider.of<UserModel>(context, listen: false).saveUser(user);
-      AppModel().config(context);
+      AppModel().config(context, true);
       checkForNewSharedLists(context);
 
     }
@@ -430,9 +431,9 @@ cheackIsLoggedIn() async {
   Widget build(BuildContext context) {
     print('islog in $isLoggedIn');
     return FutureBuilder<void>(builder: (BuildContext context, snapshot) {
-      if ( isLoggedIn==null) {
+      if ( isLoggedIn==null|| snapshot.hasError) {
         // print('taskList  ${taskList}');
-        return  Scaffold(
+        return Scaffold(
           appBar: AppBar(),
           backgroundColor: Color(0xfff3f6fc),
           body: Center(
@@ -449,6 +450,16 @@ cheackIsLoggedIn() async {
       } else if(isLoggedIn==false){
         return LoginPage();
       }
+      else return Scaffold(
+        appBar: AppBar(),
+        backgroundColor: Color(0xfff3f6fc),
+        body: Center(
+          child: CircularProgressIndicator(
+            backgroundColor: Color(0xff336699),
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        ),
+      );//
     }
     ); //auth login
   }
@@ -459,9 +470,9 @@ cheackIsLoggedIn() async {
     //WidgetsBinding.instance.addPostFrameCallback((_) async {
     // if(totalMessges == -1){
     totalMessges = await Provider.of<NewMessagesModel>(context, listen: false).newMessagesList(context);
-
+    setState(() {});
     if (mounted) {
-    //  setState (() => checkForNewSharedLists(context));
+    // setState (() => checkForNewSharedLists(context));
     }
 
     if (totalMessges > 0) {
@@ -478,18 +489,19 @@ cheackIsLoggedIn() async {
             .channelMessages
             .last
             .lastMessage) {
-        //  setState(() {
-            notification =false;
-        //  });
-        //  getnewMasseges(context);
+        // setState(() {
+            notification = false;
+        // });
+       //   getnewMasseges(context);
           print('notification stop');
         }else{
           setState(() {
             notification=true;
        });
-          getnewMasseges(context);
 
         }
+        getnewMasseges(context);
+
       }
     }
     // });
@@ -514,13 +526,16 @@ cheackIsLoggedIn() async {
           Provider.of<NewMessagesModel>(context, listen: false)
               .newMessages
               .channelMessages;
+
       //List<ChannelMessages> temp=newMsList
       newMsList.forEach((element) {
         Provider.of<ChatModel>(context, listen: false).chatsList.forEach((e) {
           if (e.id == element.channelId) {
+       //  setState(() {
             e.newMessage = true;
             e.lastMessage = element.lastMessage;
             e.lastDate = element.lastDate;
+        //  });
             Provider.of<ChatModel>(context, listen: false).orderByLastAction();
             if( notification) {
               showNotification(e.lastMessage, e.name, widget.flp);

@@ -368,7 +368,8 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
                   child: MembertImage(
                       item: widget.chatDetils == null
                           ? newChatRom
-                          : widget.chatDetils)),
+                          : widget.chatDetils.image
+                          .toString())),
             ))
       ],
       title: Row(

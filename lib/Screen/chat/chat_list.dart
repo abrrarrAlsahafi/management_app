@@ -42,11 +42,14 @@ class _ChatListState extends State<ChatList> with TickerProviderStateMixin {
   void initState() {
     // TODO: implement initState
     super.initState();
+    checkForNewSharedLists();
     newmass =
    // Provider.of<NewMessagesModel>(context, listen: false).newMessages
-      totalMessges  ==
+    Provider.of<NewMessagesModel>(context, listen: false)
+        .newMessages
+          ==
         null
-        ? 0
+        ? -1
         : Provider.of<NewMessagesModel>(context, listen: false)
         .newMessages
         .totalNewMessages;
@@ -134,7 +137,7 @@ class _ChatListState extends State<ChatList> with TickerProviderStateMixin {
                         separatorBuilder: (context, index) => Padding(
                           padding: EdgeInsets.only(left: 12),
                           child: Divider(
-                            color: Colors.black12,
+                            color: Colors.black26,
                           ),
                         ),
                         // Provide a builder function. This is where the magic happens.
@@ -145,44 +148,45 @@ class _ChatListState extends State<ChatList> with TickerProviderStateMixin {
                               ? _searchResult[index]
                               : items[index];
                           return Stack(children: [
-                            ListTile(
-                              dense: true,
-                              onTap: () {
-                                chatHestoryList[index].newMessage = false;
-                                // print(chatHestoryList[index].newMessage=false);
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      // settings: RouteSettings(name: "boo"),
-                                      builder: (context) =>
-                                          MyDirectChatDetailPage(
-                                              chatDetils:
-                                                  chatHestoryList[index],
-                                              // ischatGroup: false,
-                                              isPrivetGroup: false,
-                                              newChat: false,
-                                              isChat:
-                                                  chatHestoryList[index].isChat,
-                                              //member: chatHestoryList[index].members,
-                                              mid: chatHestoryList[index].id,
-                                              title: chatHestoryList[index]
-                                                  .name //chatTitle()
-                                              )),
-                                );
-                              },
-                              leading: item.buildLeading(context),
-                              title: item.buildTitle(context),
-                              subtitle: item.buildSubtitle(context),
-                              trailing: item.buildTrailing(context),
-                            ),
+                           ListTile(
+                            dense: true,
+                            onTap: () {
+                              chatHestoryList[index].newMessage = false;
+                              // print(chatHestoryList[index].newMessage=false);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  // settings: RouteSettings(name: "boo"),
+                                    builder: (context) =>
+                                        MyDirectChatDetailPage(
+                                            chatDetils:
+                                            chatHestoryList[index],
+                                            // ischatGroup: false,
+                                            isPrivetGroup: false,
+                                            newChat: false,
+                                            isChat:
+                                            chatHestoryList[index].isChat,
+                                            //member: chatHestoryList[index].members,
+                                            mid: chatHestoryList[index].id,
+                                            title: chatHestoryList[index]
+                                                .name //chatTitle()
+                                        )),
+                              );
+                            },
+                            leading: item.buildLeading(),
+                            title: item.buildTitle(context),
+                            subtitle: item.buildSubtitle(context),
+                            trailing: item.buildTrailing(context),
+                          ),
                             chatHestoryList[index].newMessage != null
                                 ? chatHestoryList[index].newMessage
                                     ? Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(14.0),
                                         child: Align(
                                           alignment: Alignment.topLeft,
                                           child: Icon(Icons.circle,
-                                              color: Color(0xffe9a14e)),
+                                              color: Color(0xffe9a14e)
+                                          ,size: 17,),
                                         ),
                                       )
                                     : Container()
@@ -196,7 +200,6 @@ class _ChatListState extends State<ChatList> with TickerProviderStateMixin {
     // });
   }
 }
-
 /// The base class for the different types of items the list can contain.
 abstract class ListItem {
   /// The title line to show in a list item.
@@ -205,7 +208,7 @@ abstract class ListItem {
   /// The subtitle line, if any, to show in a list item.
   Widget buildSubtitle(BuildContext context);
 
-  Widget buildLeading(BuildContext context);
+  Widget buildLeading();
 
   Widget buildTrailing(BuildContext context);
 }
@@ -217,7 +220,8 @@ class MessageItem implements ListItem {
 
   MessageItem(this.item, this.isFolowing);
 
-  Widget buildLeading(BuildContext context) => MembertImage(item: item);
+  Widget buildLeading() => MembertImage(item: item.image
+      .toString());
 
   Widget buildTitle(BuildContext context) {
     if(item.runtimeType==Note){
@@ -401,7 +405,7 @@ class _CreateGruopeState extends State<CreateGruope> {
                   final item = items[index];
                   return Row(
                     children: [
-                      item.buildLeading(context),
+                      item.buildLeading(),
                       item.buildTitle(context),
                     ],
 
@@ -585,7 +589,7 @@ class _ListUsersState extends State<ListUsers> {
                   });
                 },
                 title: ListTile(
-                  leading: item.buildLeading(context),
+                  leading: item.buildLeading(),
                   title: item.buildTitle(context),
                 ),
               )
@@ -621,7 +625,7 @@ class _ListUsersState extends State<ListUsers> {
                     );
                   }
                 },
-                leading: item.buildLeading(context),
+                leading: item.buildLeading(),
                 title: item.buildTitle(context),
               );
       },

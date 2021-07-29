@@ -53,9 +53,9 @@ class AppModel extends ChangeNotifier {
     getConfig();
   }
 
- Future<void> config(context) async {
+ Future<void> config(context, isFrist) async {
     await Provider.of<ChatModel>(context, listen: false)
-        .getChannalsHistory();
+        .getChannalsHistory(isFrist);
 
     await Provider.of<FollowingModel>(context, listen: false)
         .getfollowingList(context);

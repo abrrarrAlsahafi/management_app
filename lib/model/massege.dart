@@ -88,7 +88,7 @@ class NewMessagesModel extends ChangeNotifier {
 }
 
 class NewMessages {
-  int totalNewMessages = 0;
+  int totalNewMessages ;
   List<ChannelMessages> channelMessages;
 
   NewMessages({this.totalNewMessages, this.channelMessages});

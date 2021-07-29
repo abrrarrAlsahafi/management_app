@@ -1,3 +1,6 @@
+
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:management_app/widget/my_tab_bar.dart';
 import 'package:provider/provider.dart';
@@ -23,13 +26,13 @@ bool search = false;
 List<RouteApp> allDestinations;
 String t1, t2, t3, t4, t5;
 //NewMessages newMessege;
-int totalMessges;
+int totalMessges=-1;
 
 class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
   String s;
   TabController tabController;
   int currentTabIndex = 0;
-
+ var timer;
   void onTabChange() {
     setState(() {
       currentTabIndex = tabController.index;
@@ -44,14 +47,14 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
     tabController.addListener(() {
       onTabChange();
     });
+    timer= Timer.periodic(Duration(minutes:12), (Timer t) {
+      if(totalMessges>0){
+        print('000000');
+       setState(() { });}
+    });
   }
 
-  @override
-  void setState(fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
+
 
   @override
   void dispose() {
@@ -59,6 +62,7 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
       onTabChange();
     });
     tabController.dispose();
+   // timer.close();
     super.dispose();
   }
 
@@ -83,9 +87,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
               children: [
                 MyTabBar(
                     tabController: tabController,
-                    totalmassege: totalMessges == null
-                        ? 0
-                        : totalMessges),
+                  //  totalMessges: totalMessges == null ? -1 : totalMessges
+                ),
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery

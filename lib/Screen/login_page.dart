@@ -12,6 +12,8 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../online_root.dart';
+
 class LoginPage extends StatefulWidget {
   final logout;
   LoginPage({
@@ -254,6 +256,7 @@ class _LoginPageState extends State<LoginPage> {
       dynamic result =
           await EmomApi().login(context,username: model.username, password: model.pass);
      // print('ttt ${result}');
+
       if (result.runtimeType != User) {
         if(result.toString().contains('Failed host')){
           setState(() {
@@ -270,8 +273,8 @@ class _LoginPageState extends State<LoginPage> {
         UserModel userModel = Provider.of<UserModel>(context, listen: false);
         result.pass=model.pass;
         userModel.saveUser(result);
-       //setState(() {   isLoggedIn = true;  });
-        AppModel().config(context);
+       setState(() {   isLoggedIn = true;  });
+        AppModel().config(context, true);
         Navigator.of(context).pushNamed('/a');
         if (_isSelected) {
           saveEmail(model);

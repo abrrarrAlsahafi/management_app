@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:management_app/model/massege.dart';
 import 'package:management_app/services/emom_api.dart';
+import 'package:provider/provider.dart';
 
 //import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,7 +30,7 @@ class Chat {
       this.adminId,
       this.isChat});
 
-  Chat.fromJson(Map<String, dynamic> json) {
+  Chat.fromJson(Map<String, dynamic> json, bool isFr) {
     id = json['id'];
     name = json['channel_name'];
     image = json['image'];
@@ -58,19 +59,19 @@ class Chat {
             .map<Map<String, dynamic>>((music) => Chat.toJson(music))
             .toList(),
       );
-
+/*
   static List<Chat> decode(String musics) =>
       (json.decode(musics) as List<dynamic>)
           .map<Chat>((item) => Chat.fromJson(item))
-          .toList();
+          .toList();*/
 }
 
 class ChatModel with ChangeNotifier {
   List<Chat> chatsList;
   ChatModel();
 
-  getChannalsHistory() async {
-    chatsList = await EmomApi().chatHistory();
+  getChannalsHistory(bool isfrist) async {
+    chatsList = await EmomApi().chatHistory(isfrist);
     orderByLastAction();
     notifyListeners();
   }
@@ -89,7 +90,7 @@ class ChatModel with ChangeNotifier {
     // chatsList.removeLast();
     int id = await EmomApi()
         .createNewChannal(chat.name, chat.members, isCaht, isPrivate);
-    await getChannalsHistory();
+    await getChannalsHistory(true);
     // print('id new massege = $id');
     notifyListeners();
     return id;
@@ -124,7 +125,7 @@ class ChatModel with ChangeNotifier {
 
   addMember(channelId, memberId) async {
     await EmomApi().addMembers(channelId, memberId);
-    await getChannalsHistory();
+    await getChannalsHistory(false);
   }
 
   int haveChatRoom(int senderId) {

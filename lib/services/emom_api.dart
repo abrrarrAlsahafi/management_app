@@ -16,7 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'index.dart';
 
 class EmomApi implements BaseServices {
-  var _client = "https://ewady.com/";
+  var _client = "http://demo.ewady.com/";
   var _db = 'ewady_production'; //listMember
 /*  OdooClient  client = OdooClient("http://demo.ewady.com/");//listMember
   final orpc = OdooClient('http://demo.ewady.com');
@@ -228,7 +228,7 @@ class EmomApi implements BaseServices {
   } //User.fro
 
   @override
-  Future<List<Chat>> chatHistory() async {
+  Future<List<Chat>> chatHistory(bool isfrist) async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
     try {
@@ -240,7 +240,7 @@ class EmomApi implements BaseServices {
 
       if (response.statusCode == 200) {
         for (var item in convert.jsonDecode(response.body)["data"]) {
-          list.add(Chat.fromJson(item));
+          list.add(Chat.fromJson(item, isfrist));
         //  print("chat item.. ${item}");
 
         }
@@ -322,7 +322,7 @@ class EmomApi implements BaseServices {
           list.add(Massege.fromJson(item));
         }
       }
-      //  print('response 1111 ${response.body}');
+      //print('response 1111 ${response.body}');
 
       return list;
     } catch (e) {

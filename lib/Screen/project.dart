@@ -74,7 +74,7 @@ class _ProjectsState extends State<Projects> {
 
 
       if(result) {
-        AppModel().config(context);
+        AppModel().config(context, false);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: [

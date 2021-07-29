@@ -69,7 +69,7 @@ class _MembersListState extends State<MembersList> {
                       ListTile(
                         // onTap: isChckList?()=>addMember():(){},
                         dense: true,
-                        leading: item.buildLeading(context),
+                        leading: item.buildLeading(),
                         title: item.buildTitle(context),
                         subtitle: item.buildSubtitle(context),
                       );

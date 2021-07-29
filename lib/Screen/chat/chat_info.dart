@@ -50,21 +50,22 @@ class _ChatInfoState extends State<ChatInfo> {
         child: Column(
           children: [
             Container(
-              height: MediaQuery.of(context).size.height/3.4,
-              width: MediaQuery.of(context).size.width,
+              //height: MediaQuery.of(context).size.height/3.9,
+              //width: MediaQuery.of(context).size.width,
               color: hexToColor('#336699'),
               child: Column(
                 children: [
-
                   Container(
-                    height: 100,
-                    width: 100,
+                    height: 90,
+                    width: 90,
                     //borderRadius: BorderRadius.circular(33.0),
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(50.0),
-                        child: MembertImage(item: widget.sender)),
+                        child: MembertImage(item: widget.sender.image
+                            .toString())
+                    ),
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 10),
                   // Image.memory()
                   Align(
                     alignment: Alignment.bottomCenter,

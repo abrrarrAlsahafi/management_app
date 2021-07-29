@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:management_app/widget/content_translate.dart';
 import '../app_theme.dart';
+import '../bottom_bar.dart';
 
 class MyTabBar extends StatelessWidget {
   const MyTabBar({
     Key key,
     @required this.tabController,
-    this.totalmassege,
+   // this.totalmassege,
   }) : super(key: key);
 
   final TabController tabController;
-  final int totalmassege;
+ // final int totalmassege;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +58,7 @@ class MyTabBar extends StatelessWidget {
                 ),
                 //Provider.of<NewMessagesModel>(context,listen: false).totalm!=-1||
                 // Provider.of<NewMessagesModel>(context,listen: false).newMessages.totalNewMessages>0||
-                totalmassege > 0
+                totalMessges > 0
                     ? Positioned(
                         top: 0.0,
                         left: 12,
@@ -75,7 +76,7 @@ class MyTabBar extends StatelessWidget {
                               shape: BoxShape.circle, color: Color(0xffe9a14e)),
                           child: Center(
                             child: Text(
-                              '$totalmassege',
+                              '$totalMessges',
                               //  "    ${Provider.of<NewMessagesModel>(context).newMessages.totalNewMessages}",
                               style: TextStyle(
                                   color: MyTheme.kPrimaryColorVariant,

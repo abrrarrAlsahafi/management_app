@@ -16,7 +16,7 @@ abstract class BaseServices {
 
   Future<dynamic> login(context,{username, password});
   Future<void> logOut({username, password});
-  Future<dynamic> chatHistory();
+  Future<dynamic> chatHistory(bool isFrist);
   Future<List<Folowing>> getfollowingList();
   Future<List<Task>> getUserTask(id);
   Future<NewMessages> newMasseges();
@@ -56,8 +56,8 @@ class Services implements BaseServices {
   }
 
   @override
-  Future<dynamic> chatHistory() {
-    throw serviceApi.chatHistory();
+  Future<dynamic> chatHistory(bool isFrist) {
+    throw serviceApi.chatHistory(isFrist);
   }
 
   @override

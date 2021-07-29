@@ -1,29 +1,56 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:management_app/model/channal.dart';
 import 'package:management_app/model/folowing.dart';
 import 'package:management_app/model/note.dart';
 
-class MembertImage extends StatelessWidget {
-  final item;
+bool isFrist=false;
 
-  const MembertImage({Key key, this.item}) : super(key: key);
+class MembertImage extends StatefulWidget {
+  var item;
+
+   MembertImage({Key key, this.item}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return item.runtimeType==Note?buildUserImage(item)
-    :buildImage(item);
+  _MembertImageState createState() => _MembertImageState();
+}
+
+class _MembertImageState extends State<MembertImage> {
+  String _base64;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.item!='False'||widget.item.runtimeType==Folowing) {
+      var str = widget.item//.image.toString()
+          .substring(2, widget.item//.image.toString()
+          .length - 1);
+      if (mounted) {
+     //   setState(() {
+          _base64 = base64.normalize(str);
+      //  });
+      }
+
+      //str = base64.normalize(str);
+    }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return widget.item.runtimeType==Note? buildUserImage(widget.item) : buildImage(widget.item);
+  }
 
   buildImage(item) {
     //if(item.runtimeType==Folowing){
-        if(item.image=='False') {
+        if(item//.image
+            =='False') {
           print("image ${item.image}");
-        return  falseImage();
+        return falseImage();
       } else{
-          var str = item.image.toString().substring(2,item.image.toString().length - 1);
-          str = base64.normalize(str);
+          Uint8List bytes = base64.decode(_base64);
+
           return Container(
             width:40,
             height:40,
@@ -31,14 +58,19 @@ class MembertImage extends StatelessWidget {
               image:DecorationImage(
                 image:Image(
                   gaplessPlayback: true,
-                  image:Image.memory(
-                  base64.decode(str),
-                  fit: BoxFit.cover,
-                  height: 40,
-                  width: 40
-                ).image,
+                  image:Image.asset(
+'assets/chat.PNG',
+                   // bytes,
+                    gaplessPlayback: true,
+
+                    // 'assets/a.jpg',
+               //   base64.decode(str),
+                   fit: BoxFit.cover,
+                    height: 50, width: 50
+                    ,
+                  ).image,
                 fit: BoxFit.cover,
-              ).image  ,
+              ).image,
               ),
               borderRadius:BorderRadius.circular(33),
                 border: Border.all(color: Colors.grey[200])
