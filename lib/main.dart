@@ -1,19 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 //import 'package:workmanager/workmanager.dart';
-import 'notification_test.dart';
 import 'online_root.dart';
 
-void main() async {
+FlutterLocalNotificationsPlugin flp = FlutterLocalNotificationsPlugin();
+
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  FlutterLocalNotificationsPlugin flp =
-  FlutterLocalNotificationsPlugin();
-  var android = AndroidInitializationSettings('@mipmap/ic_launcher');
-  var iOS = IOSInitializationSettings();
-  var initSetttings =
-  InitializationSettings( android, iOS);
-  flp.initialize(initSetttings);
+  var initializationSettingsAndroid =
+  AndroidInitializationSettings('ic_launcher');
+  var initializationSettingsIOS = IOSInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      onDidReceiveLocalNotification:
+          (int id, String title, String body, String payload) async {});
+  var initializationSettings = InitializationSettings(
+      initializationSettingsAndroid, initializationSettingsIOS);
+
+  await flp.initialize(initializationSettings,
+      onSelectNotification: (String payload) async {
+        if (payload != null) {
+          debugPrint('notification payload: ' + payload);
+        }
+      });
+ /* Workmanager().initialize(
+      callbackDispatcher, // The top level function, aka callbackDispatcher
+      isInDebugMode: true // This should be false
+  );
+  Workmanager().registerOneOffTask("1", "simpleTask",  initialDelay: Duration(minutes: 10),
+  );*/
+  //Android only (see below)
+
+  // var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+  //var iOS = IOSInitializationSettings();
+  //var initSetttings =
+  //InitializationSettings( android, iOS);
+ // flp.initialize(initSetttings);
   //showNotification('lastMessage','name', flp);
 
   /* if (Platform.isIOS) {
@@ -30,6 +53,9 @@ void main() async {
 */
   runApp(MyApp(appLanguage: flp));
 }
+
+
+
 
 /*
 void main() async {

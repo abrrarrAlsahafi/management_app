@@ -9,12 +9,12 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
   Timer _timer;
-  FlutterLogoStyle _logoStyle = FlutterLogoStyle.markOnly;
+  //FlutterLogoStyle _logoStyle = FlutterLogoStyle.markOnly;
 
   _LoadingScreenState() {
     _timer = new Timer(const Duration(seconds: 12), () {
       setState(() {
-        _logoStyle = FlutterLogoStyle.horizontal;
+      //  _logoStyle = FlutterLogoStyle.horizontal;
       });
     });
   }

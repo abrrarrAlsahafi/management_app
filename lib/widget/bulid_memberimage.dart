@@ -1,13 +1,12 @@
-import 'dart:convert';
-import 'dart:typed_data';
+
 
 import 'package:flutter/material.dart';
-import 'package:management_app/model/channal.dart';
-import 'package:management_app/model/folowing.dart';
-import 'package:management_app/model/note.dart';
+import 'package:management_app/app_theme.dart';
+import 'package:management_app/model/task.dart';
 
 bool isFrist=false;
 
+// ignore: must_be_immutable
 class MembertImage extends StatefulWidget {
   var item;
 
@@ -18,56 +17,48 @@ class MembertImage extends StatefulWidget {
 }
 
 class _MembertImageState extends State<MembertImage> {
-  String _base64;
+  //String _base64;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(widget.item!='False'||widget.item.runtimeType==Folowing) {
-      var str = widget.item//.image.toString()
-          .substring(2, widget.item//.image.toString()
-          .length - 1);
-      if (mounted) {
-     //   setState(() {
-          _base64 = base64.normalize(str);
-      //  });
-      }
 
-      //str = base64.normalize(str);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.item.runtimeType==Note? buildUserImage(widget.item) : buildImage(widget.item);
+    return buildImage();
   }
 
-  buildImage(item) {
-    //if(item.runtimeType==Folowing){
-        if(item//.image
-            =='False') {
-          print("image ${item.image}");
-        return falseImage();
-      } else{
-          Uint8List bytes = base64.decode(_base64);
-
-          return Container(
+  buildImage() {
+          // print("image ${item}");
+          //var bytes =item;//'http://demo.ewady.com/web/image?model=mail.channel&id=$item&field=image_128';
+           // base64.decode(_base64);
+           return widget.item.runtimeType==Task?CircleAvatar(
+             child:Text('${widget.item.taskName[0].toString().toUpperCase()}', style: TextStyle(color: Colors.white) ,),
+             backgroundColor:MyTheme.colors[0] ,
+           ):CircleAvatar(
+             child:Text('${widget.item.name[0].toString().toUpperCase()}', style: TextStyle(color: Colors.white) ,),
+             backgroundColor:MyTheme.colors[0] ,
+           );/*Container(
             width:40,
             height:40,
             decoration: BoxDecoration(
               image:DecorationImage(
                 image:Image(
                   gaplessPlayback: true,
-                  image:Image.asset(
-'assets/chat.PNG',
-                   // bytes,
-                    gaplessPlayback: true,
+                  image:FadeInImage(
+                    image: NetworkImage('http://demo.ewady.com/web/image?model=mail.channel&id=$item&field=image_128'),
+                    placeholder: AssetImage('assets/bgimgs.png'),
+                  //bytes,
+
+                    //placeholder: AssetImage('assets/product.jpg'),
+                  //  gaplessPlayback: true,
 
                     // 'assets/a.jpg',
                //   base64.decode(str),
-                   fit: BoxFit.cover,
-                    height: 50, width: 50
-                    ,
+                  // fit: BoxFit.cover,
+                 //   height: 50, width: 50
                   ).image,
                 fit: BoxFit.cover,
               ).image,
@@ -75,29 +66,8 @@ class _MembertImageState extends State<MembertImage> {
               borderRadius:BorderRadius.circular(33),
                 border: Border.all(color: Colors.grey[200])
             ),
-          );
-        }
- /*   }else{
+          );*/
 
-    if(item.runtimeType==Chat){
-      print('item run type ${item.isChat}');
-      return Container(
-        width: 55,
-        height: 55,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]),
-         color:Colors.grey[300] ,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          item.isChat?Icons.person:Icons.group_outlined,
-          color: Colors.white,
-          size: 36,
-        ),
-      );
-    }
-   // if(item)
-    }*/
   }
 
   falseImage(){
@@ -113,9 +83,8 @@ class _MembertImageState extends State<MembertImage> {
   }
 
   buildUserImage(item) {
-    /*
-    *  var str = item.image.toString().substring(2,item.image.toString().length - 1);
-          str = base64.normalize(str);
+     // var str = item.image.toString().substring(2,item.image.toString().length - 1);
+          //str = base64.normalize(str);
           return Container(
             width:40,
             height:40,
@@ -123,8 +92,8 @@ class _MembertImageState extends State<MembertImage> {
               image:DecorationImage(
                 image:Image(
                   gaplessPlayback: true,
-                  image:Image.memory(
-                  base64.decode(str),
+                  image:Image.network('${item.image}',
+                //  base64.decode(str),
                   fit: BoxFit.cover,
                   height: 40,
                   width: 40
@@ -135,7 +104,7 @@ class _MembertImageState extends State<MembertImage> {
               borderRadius:BorderRadius.circular(33),
                 border: Border.all(color: Colors.grey[200])
             ),
-          );*/
+          );
  //   Provider.of<>(context)
    // item.user
 

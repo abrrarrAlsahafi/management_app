@@ -12,6 +12,7 @@ class AlertDialogPM extends StatefulWidget {
   final content;
   final dearection;
   final isMeeting;
+  final proId;
 
   AlertDialogPM(
       {Key key,
@@ -19,7 +20,7 @@ class AlertDialogPM extends StatefulWidget {
       this.content,
       this.dearection,
       this.index,
-      this.isMeeting})
+      this.isMeeting, this.proId})
       : super(key: key);
 
   @override
@@ -95,7 +96,7 @@ class _AlertDialogPMState extends State<AlertDialogPM> {
                                                   listen: false)
                                                   .uidAssigind,
                                               tid: widget.index.taskId);
-                                         // await Provider.of<TaskModel>(context,listen: false).ta;
+                                         //await Provider.of<TaskModel>(context,listen: false).getUserTasks(widget.proId);
 
                                           await Provider.of<TaskModel>(context,listen: false).viewLogNote();
 

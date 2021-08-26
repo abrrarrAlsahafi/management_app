@@ -18,10 +18,11 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   bool isChecked = false;
   bool status = false;
-  bool isLogout=false;
+  bool isLogout = false;
   bool _disposed = false;
+
   //Geolocator geolocator = Geolocator();
- // String _latitude = "24.7348936";
+  // String _latitude = "24.7348936";
   //String _longitude = "46.783085899999996";
   //bool _isGettingLocation;
   var val = AppModel().locale == 'ar' ? langList.first : langList.last;
@@ -30,9 +31,10 @@ class _ProfileState extends State<Profile> {
 
   void initState() {
     super.initState();
-   // _isGettingLocation = false;
+    // _isGettingLocation = false;
     //_getCurrentLocation();
   }
+
 /*
   _getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition(
@@ -67,186 +69,206 @@ class _ProfileState extends State<Profile> {
 
   profileApp(context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-      IconButton(
-      icon: Icon(
-      Icons.lock_outline_rounded,
-        color: Colors.white,
-        size: 18,
-      ),
-        onPressed: ()  {
 
-setState(() {
-  isLogout=true;
-});
-          //
-        //  SharedPreferences prefs = await SharedPreferences.getInstance();
-        //  await prefs.setBool('remember', false);
-        //  Navigator.of(context).pushNamed('/');
-          Navigator.push(context, MaterialPageRoute(builder: (context) => Roots()));
-          Provider.of<UserModel>(context, listen: false).logout(context);
-         //
-/*
-          setState(() {
-          Navigator.of(context).pushNamed('/b');
-
-        });*/
-        }
-      )],
-      title: isLogout?Center(
-        child: CircularProgressIndicator(
-          backgroundColor: Color(0xff336699),
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        //  backgroundColor: MyTheme.kAccentColor,
+        body: ListView(
+      children: [
+        SafeArea(
+          child: Material(
+            elevation: 2.0,
+            color: MyTheme.kPrimaryColorVariant,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical:10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  isLogout
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Color(0xff336699),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : Expanded(
+                          child: Text(
+                              '${Provider.of<UserModel>(context, listen: false).user.name}',
+                              style: MyTheme.kAppTitle),
+                        ),
+                  IconButton(
+                    icon: Icon(Icons.lock, color: Colors.red),
+                    onPressed: () {
+                      setState(() {
+                        isLogout = true;
+                        isLoggedIn = false;
+                        //  index=0;
+                      });
+                      //
+                      //  SharedPreferences prefs = await SharedPreferences.getInstance();
+                      //  await prefs.setBool('remember', false);
+                      //  Navigator.of(context).pushNamed('/');
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Roots()));
+                      Provider.of<UserModel>(context, listen: false)
+                          .logout(context);
+                    },
+                  )
+                ],
+              ),
+            ),
+          ),
         ),
-      ): Text('${Provider.of<UserModel>(context,listen: false).user.partnerDisplayName}',
-          style: MyTheme.kAppTitle
-    )),
-      backgroundColor: MyTheme.kAccentColor,
-        body:  Container(
-      margin: EdgeInsets.all(12),
-      height: MediaQuery.of(context).size.height,
+        Container(
+          margin: EdgeInsets.all(12),
+          height: MediaQuery.of(context).size.height / 1.3,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10)
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: Offset(0, 3), // changes position of shadow
-                ),
-              ],
-              //borderRadius: BorderRadius.all(Radius.circular(12))
+            ],
+            //borderRadius: BorderRadius.all(Radius.circular(12))
           ),
-     // color: hexToColor('#336699'),
-      child: Column(
-        children: [
-          Container(
-              margin: EdgeInsets.all(12),
-              decoration:BoxDecoration(color: Colors.grey[400],
-                borderRadius: BorderRadius.all(Radius.circular(12))
+          // color: hexToColor('#336699'),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
+                height: MediaQuery.of(context).size.width / 66,
+                width: MediaQuery.of(context).size.width / 4,
               ),
-
-              height:  MediaQuery.of(context).size.width/66,
-          width: MediaQuery.of(context).size.width/4,
-          ),
-          employeeInfo(),
-      /*    Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height / 33),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 55,
-                  width: 55,
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios_rounded,
-                      color: Colors.white,
-                      size: 18,
+              employeeInfo(),
+              /*    Padding(
+                padding:
+                    EdgeInsets.only(top: MediaQuery.of(context).size.height / 33),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 55,
+                      width: 55,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
                     ),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ),
-                Expanded(
-                    child: SizedBox(
-                  width: 12,
-                )),
-                IconButton(
-                  icon: Icon(
-                    Icons.lock_outline_rounded,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                  onPressed: () async {
-                    await EmomApi().logOut(
-                      username: Provider.of<UserModel>(context, listen: false)
-                          .user
-                          .username,
-                      password: Provider.of<UserModel>(context, listen: false)
-                          .user
-                          .pass,
-                    );
+                    Expanded(
+                        child: SizedBox(
+                      width: 12,
+                    )),
+                    IconButton(
+                      icon: Icon(
+                        Icons.lock_outline_rounded,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      onPressed: () async {
+                        await EmomApi().logOut(
+                          username: Provider.of<UserModel>(context, listen: false)
+                              .user
+                              .username,
+                          password: Provider.of<UserModel>(context, listen: false)
+                              .user
+                              .pass,
+                        );
 
-                    setState(() {
-                      isLoggedIn = false;
-                      Navigator.of(context).pushNamed('/b');
-                    });
-                  },
-                )
-              ],
-            ),
+                        setState(() {
+                          isLoggedIn = false;
+                          Navigator.of(context).pushNamed('/b');
+                        });
+                      },
+                    )
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.width / 66),
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      '${Provider.of<UserModel>(context).user.partnerDisplayName}',
+                      style: TextStyle(
+                          fontSize: 44,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    )),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  // width:MediaQuery.of(context).size.width/1.5 ,
+                  height: MediaQuery.of(context).size.height / 1.288,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.transparent,
+                      ),
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(33))),
+                  child: employeeInfo(),
+                ),
+              ),*/
+            ],
           ),
-          Expanded(
-            child: Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.width / 66),
-                alignment: Alignment.topCenter,
-                child: Text(
-                  '${Provider.of<UserModel>(context).user.partnerDisplayName}',
-                  style: TextStyle(
-                      fontSize: 44,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                )),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              // width:MediaQuery.of(context).size.width/1.5 ,
-              height: MediaQuery.of(context).size.height / 1.288,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    color: Colors.transparent,
-                  ),
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(33))),
-              child: employeeInfo(),
-            ),
-          ),*/
-        ],
-      ),
+        ),
+      ],
     ));
   }
 
   employeeInfo() {
     return Padding(
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width / 22),
-      child: Column(
-        children: [
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width / 22),
+        child: Column(children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ContentApp(
                   code: 'uid', //'Company Id:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w200, color: Colors.grey)),
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w200,
+                      color: Colors.grey)),
               Expanded(child: SizedBox(height: 10)),
-              isLogout?Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Color(0xff336699),
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              ): Text("${Provider.of<UserModel>(context).user.uid}",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              isLogout
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Color(0xff336699),
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Text("${Provider.of<UserModel>(context).user.uid}",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
-         // SizedBox(height: 10),
+          // SizedBox(height: 10),
           Divider(color: Colors.grey),
-        //  SizedBox(height: 10),
+          //  SizedBox(height: 10),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             ContentApp(
-              code: 'lang',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w200, color: Colors.grey)
-            ),
+                code: 'lang',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w200,
+                    color: Colors.grey)),
             Expanded(child: SizedBox(height: 10)),
             Align(
               alignment: Alignment.center,
@@ -288,9 +310,9 @@ setState(() {
               ),
             ),
           ]),
-         // SizedBox(height: 10),
+          // SizedBox(height: 10),
           Divider(color: Colors.grey),
-          SizedBox(height: MediaQuery.of(context).size.height/55),
+          SizedBox(height: MediaQuery.of(context).size.height / 55),
 
           // SizedBox(height: MediaQuery.of(context).size.width / 6),
           ContentApp(
@@ -299,8 +321,7 @@ setState(() {
                   color: Colors.grey[400],
                   fontWeight: FontWeight.bold,
                   fontSize: 14)),
-          SizedBox(height: MediaQuery.of(context).size.height/44),
-
+          SizedBox(height: MediaQuery.of(context).size.height / 44),
           Container(
               padding: EdgeInsets.only(left: 5),
               height: MediaQuery.of(context).size.width / 1.9,
@@ -311,18 +332,20 @@ setState(() {
                     color: Color(0xffe9a14e),
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(22))),
-              child:isLogout?Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Color(0xff336699),
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              ):Center(
-                child:QrImage(
-                  data:
-                  "${Provider.of<UserModel>(context).user.uid + num.parse(DateTime.now().microsecond.toString())}",
-                  version: QrVersions.auto,
-                  size: MediaQuery.of(context).size.width / 1.2,
-                ) /*_isGettingLocation == null
+              child: isLogout
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Color(0xff336699),
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Center(
+                      child: QrImage(
+                      data:
+                          "${Provider.of<UserModel>(context).user.uid + num.parse(DateTime.now().microsecond.toString())}",
+                      version: QrVersions.auto,
+                      size: MediaQuery.of(context).size.width / 1.2,
+                    ) /*_isGettingLocation == null
                     ? Expanded(
                       child: ContentApp(
                           code: 'loding',
@@ -346,29 +369,34 @@ setState(() {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12)),
                         ),
-              */)),
-          SizedBox(height: MediaQuery.of(context).size.height/44),
+              */
+                      )),
+          SizedBox(height: MediaQuery.of(context).size.height / 44),
           Divider(color: Colors.grey),
-          SizedBox(height: MediaQuery.of(context).size.height/44),
-
+          SizedBox(height: MediaQuery.of(context).size.height / 44),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-             Image.asset('assets/Logowithtext.png',
-             height: MediaQuery.of(context).size.height/15,
-             ),
-              SizedBox(width: 22),Image.asset('assets/logo.png',height: MediaQuery.of(context).size.height/15),
+              Image.asset(
+                'assets/Logowithtext.png',
+                height: MediaQuery.of(context).size.height / 15,
+              ),
+              SizedBox(width: 22),
+              Image.asset('assets/logo.png',
+                  height: MediaQuery.of(context).size.height / 15),
               Text("EWADY",
-                  style: TextStyle(fontSize: MediaQuery.of(context).size.height/44, fontWeight: FontWeight.bold,color: MyTheme.kUnreadChatBG)),
-           ],
+                  style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height / 44,
+                      fontWeight: FontWeight.bold,
+                      color: MyTheme.kUnreadChatBG)),
+            ],
           ),
           Text("V 1.0.0",
-              style: TextStyle(fontSize: MediaQuery.of(context).size.height/44,
-                  fontWeight: FontWeight.bold, color: Colors.grey)),
-
-        ],
-      ),
-    );
+              style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height / 44,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey)),
+        ]));
   }
 }
 

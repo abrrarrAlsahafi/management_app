@@ -53,14 +53,13 @@ class AppModel extends ChangeNotifier {
     getConfig();
   }
 
- Future<void> config(context, isFrist) async {
-    await Provider.of<ChatModel>(context, listen: false)
-        .getChannalsHistory(isFrist);
-
-    await Provider.of<FollowingModel>(context, listen: false)
-        .getfollowingList(context);
+ Future<void> config(context) async {
+    await Provider.of<ChatModel>(context, listen: false).getChannalsHistory();
+    Provider.of<ChatModel>(context, listen: false).ubdateChatTitle(context);
+    Provider.of<NewMessagesModel>(context, listen: false).getnewMasseges(context);
+    await Provider.of<FollowingModel>(context, listen: false).getfollowingList(context);
     await Provider.of<MassegesContent>(context, listen: false).gitAllMessagees(context);
-    await Provider.of<ProjectModel>(context, listen: false).getUserProjects();
+   // await Provider.of<ProjectModel>(context, listen: false).getUserProjects();
    // Provider.of<ProjectModel>(context, listen: false).projectManegerName(context);
 
 

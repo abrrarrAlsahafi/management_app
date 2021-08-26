@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:management_app/common/constant.dart';
 import 'package:management_app/model/channal.dart';
 import 'package:management_app/model/folowing.dart';
 import 'package:management_app/model/user.dart';
@@ -43,8 +42,8 @@ class _ChatInfoState extends State<ChatInfo> {
   Widget build(BuildContext context) {
     // print(      Provider.of<ChatModel>(context, listen: false).isChat(widget.channalId));
     return Scaffold(
-      backgroundColor: const Color(0xfff3f6fc),
-      appBar: AppBar(elevation: 0),
+      backgroundColor: Colors.white,
+      appBar: AppBar(elevation: 0, backgroundColor: MyTheme.kAccentColorVariant,),
       body: Container(
 
         child: Column(
@@ -52,7 +51,7 @@ class _ChatInfoState extends State<ChatInfo> {
             Container(
               //height: MediaQuery.of(context).size.height/3.9,
               //width: MediaQuery.of(context).size.width,
-              color: hexToColor('#336699'),
+              color:  MyTheme.kAccentColorVariant,//hexToColor('#336699'),
               child: Column(
                 children: [
                   Container(
@@ -61,8 +60,7 @@ class _ChatInfoState extends State<ChatInfo> {
                     //borderRadius: BorderRadius.circular(33.0),
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(50.0),
-                        child: MembertImage(item: widget.sender.image
-                            .toString())
+                        child: MembertImage(item: widget.sender)
                     ),
                   ),
                   SizedBox(height: 10),
@@ -71,7 +69,7 @@ class _ChatInfoState extends State<ChatInfo> {
                     alignment: Alignment.bottomCenter,
                     child: Text(
                       widget.sender.name.toString(),
-                      style: TextStyle(fontSize: 22, color: Colors.white),
+                      style: TextStyle(fontSize: 22, color: Colors.black),
                     ),
                   ),
                 ],
@@ -84,23 +82,24 @@ class _ChatInfoState extends State<ChatInfo> {
         ),
       ),
 
-      floatingActionButton:widget.sender.isChat&& widget.sender.adminId==Provider.of<UserModel>(context, listen: false).user.uid?Container() :
-      FlatActionButtonWidget(
-          onPressed:(){
-            // _showModalSheet();             // BottonWidget().
-            mainBottomSheet(context, 'addMember');
-            // print("$b");
-            if(newMember)
-            {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("there is new member added to ${widget.sender.name.toString()}",
-                  style: MyTheme.Snacbartext,),
-                duration: Duration(seconds: 4),
-                backgroundColor: MyTheme.kUnreadChatBG,));
-            }
-          },
-          icon: Icons.person_add_alt_1_outlined
-      ),
+     floatingActionButton:widget.sender.isChat?Container() :
+         widget.sender.adminId==Provider.of<UserModel>(context, listen: false).user.uid?
+     FlatActionButtonWidget(
+         onPressed:(){
+           // _showModalSheet();             // BottonWidget().
+           mainBottomSheet(context, 'addMember');
+           // print("$b");
+           if(newMember)
+           {
+             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+               content: Text("there is new member added to ${widget.sender.name.toString()}",
+                 style: MyTheme.Snacbartext,),
+               duration: Duration(seconds: 4),
+               backgroundColor: MyTheme.kUnreadChatBG,));
+           }
+         },
+         icon: Icons.person_add_alt_1_outlined
+     ):Container(),
     );
   }
 

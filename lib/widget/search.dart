@@ -1,17 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:management_app/app_theme.dart';
-import 'package:management_app/generated/I10n.dart';
 
 class SearchWidget extends StatelessWidget {
   final onSearchTextChanged;
   final controller;
   final onPressed;
+
 //hintText: '${S.of(context).search}',
-  const SearchWidget({Key key, this.onSearchTextChanged, this.controller, this.onPressed}) : super(key: key);
+  const SearchWidget(
+      {Key key, this.onSearchTextChanged, this.controller, this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return  Padding(
+      padding: const EdgeInsets.only(top: 12, left: 6, right: 6),
+      child: Material(
+      //elevation: 2.0,
+            borderRadius: BorderRadius.circular(19),
+      // borderSide: BorderSide(color: Colors.grey.shade200),
+        child: TextFormField(
+          controller: controller,
+          onChanged: onSearchTextChanged,
+          decoration: InputDecoration(
+            hintText: "Search...",
+           // hintStyle: TextStyle(color: Colors.grey.shade600),
+            prefixIcon: Icon(
+              Icons.search,
+              color: Colors.grey.shade600,
+              size: 20,
+            ),
+            filled: true,
+        fillColor: Colors.grey.shade200,
+           contentPadding: EdgeInsets.all(12),
+          enabledBorder: OutlineInputBorder(
+           borderRadius: BorderRadius.circular(19),
+          borderSide: BorderSide(color: Colors.grey.shade200),
+
+        ),
+
+          ),
+        ),
+      ),
+    );
+    /*Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child:  new TextField(
         controller: controller,
@@ -29,6 +60,6 @@ class SearchWidget extends StatelessWidget {
         ),//new InputDecoration(contentPadding: EdgeInsets.all(1), hintText: '${S.of(context).search}', border: InputBorder.none),
         onChanged: onSearchTextChanged,
       ),
-    );
+    );*/
   }
 }

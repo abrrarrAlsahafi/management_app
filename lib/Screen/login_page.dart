@@ -66,7 +66,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final focus = FocusScope.of(context);
-
     return Scaffold(
         backgroundColor: const Color(0xfff3f6fc),
         body: ListView(
@@ -79,6 +78,8 @@ class _LoginPageState extends State<LoginPage> {
             autovalidate: _autoValidate,
             child: Column(
               children: <Widget>[
+                SizedBox(height: MediaQuery.of(context).size.width/10),
+
                 Padding(
                   padding:EdgeInsets.all(MediaQuery.of(context).size.width/22),
                   child: Stack(
@@ -138,6 +139,8 @@ class _LoginPageState extends State<LoginPage> {
                       ]),
                 ),
                 //SizedBox(height: MediaQuery.of(context).size.width/5.5),
+                SizedBox(height: MediaQuery.of(context).size.width/10),
+
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: TextFormField(
@@ -180,6 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                       //  )
                       ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: TextFormField(
@@ -236,11 +240,13 @@ class _LoginPageState extends State<LoginPage> {
                     )),
                   ],
                 ),
+                SizedBox(height:MediaQuery.of(context).size.height/10),
+
                 ButtonWidget(
                     onPressed: () => validateInput(),
                     child: ContentApp(
                         code: 'bottonlogin',
-                        style: TextStyle(
+                        style: TextStyle(color: Colors.white,
                             fontSize: 22, fontWeight: FontWeight.bold,)),
                   ),
               ],
@@ -250,19 +256,18 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> validateInput() async {
-    print("user mame .. ${model.username}");
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       dynamic result =
           await EmomApi().login(context,username: model.username, password: model.pass);
-     // print('ttt ${result}');
+      print('ttt ${result}');
 
       if (result.runtimeType != User) {
         if(result.toString().contains('Failed host')){
           setState(() {
             isoffline=true;
           });
-          //errmsg();
+          //errmsg();F
           //print('network connct');
         }else{
         setState(() {
@@ -274,7 +279,7 @@ class _LoginPageState extends State<LoginPage> {
         result.pass=model.pass;
         userModel.saveUser(result);
        setState(() {   isLoggedIn = true;  });
-        AppModel().config(context, true);
+        AppModel().config(context);
         Navigator.of(context).pushNamed('/a');
         if (_isSelected) {
           saveEmail(model);

@@ -1,5 +1,6 @@
 import 'dart:convert' as convert;
 import 'dart:convert';
+
 import 'package:management_app/model/board.dart';
 import 'package:management_app/model/channal.dart';
 import 'package:management_app/model/folowing.dart';
@@ -16,7 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'index.dart';
 
 class EmomApi implements BaseServices {
-  var _client = "http://demo.ewady.com/";
+  var _client = "https://ewady.com/";
   var _db = 'ewady_production'; //listMember
 /*  OdooClient  client = OdooClient("http://demo.ewady.com/");//listMember
   final orpc = OdooClient('http://demo.ewady.com');
@@ -136,7 +137,7 @@ class EmomApi implements BaseServices {
             'Accept': 'application/json'
           }); //_setHeaders());
       updateCookie(response);
-      //print("response.. ${response.body}");
+      print("response.. ${response.body}");
 
       final body = convert.jsonDecode(response.body);
       if (!response.body.contains("error")) {
@@ -169,19 +170,22 @@ class EmomApi implements BaseServices {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
     try {
+      print('jjjjj ${isChat}');
       var response = await http.post(
         "${_client}chat/add_new_channel",
         headers: _setHeaders(id),
         body: convert.jsonEncode({
           "jsonrpc": "2.0",
           "params": {
-            "channel_name": channelName,
+           "channel_name": channelName,
             "member_ids": memberIds,
             "channel_type": isChat ? "chat" : "channel",
             "public": isPrivate ? "private" : "public"
           }
         }),
       );
+      print('jjrespojjj ${response.body}');
+
       final body = json.decode(response.body);
       if (response.statusCode == 200) {
         String strNum = "${body['result'].toString()}";
@@ -202,6 +206,7 @@ class EmomApi implements BaseServices {
 
   @override
   Future<bool> postNewMessage(int channalid, String massege) async {
+    print("channalid..  $channalid, $massege");
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
     try {
@@ -211,16 +216,16 @@ class EmomApi implements BaseServices {
         body: convert.jsonEncode(
           {
             "jsonrpc": "2.0",
-            "params": {"message": "$massege", "channel_id": channalid}
+            "params": {"message": massege, "channel_id": channalid}
           },
         ),
       );
-      // print("post massege  ${response.body}");
-      if (response.statusCode == 200) {
-        return response.body.contains('messages Created');
-      } else {
-        // print("post massege  ${response.body}");
+      print("post massege  ${response.body}");
+      if (response.body.contains('Bad Request')) {
+        print(" false post massege  ${response.body}");
         return false;
+      } else {
+        return true;//response.body.contains('messages Created');
       }
     } catch (e) {
       rethrow;
@@ -228,7 +233,7 @@ class EmomApi implements BaseServices {
   } //User.fro
 
   @override
-  Future<List<Chat>> chatHistory(bool isfrist) async {
+  Future<List<Chat>> chatHistory() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
     try {
@@ -237,17 +242,21 @@ class EmomApi implements BaseServices {
           headers: {'Cookie': 'frontend_lang=en_US; session_id=$id'});
       List<Chat> list = [];
       // var respData = json.decode(response.body);
+      if (convert.jsonDecode(response.body)['code']==200) {
 
-      if (response.statusCode == 200) {
-        for (var item in convert.jsonDecode(response.body)["data"]) {
-          list.add(Chat.fromJson(item, isfrist));
-        //  print("chat item.. ${item}");
-
+        for (var item in convert.jsonDecode(response.body)["data"]){
+          var bytes ='http://demo.ewady.com/web/image?model=mail.channel&id=${item['id']}&field=image_128';
+         // final ByteData imageData = await NetworkAssetBundle(Uri.parse("$bytes")).load("");
+         // final Uint8List _bytes =  imageData.buffer.asUint8List();
+        //  print(_bytes);
+         // item['image']=_bytes;
+          list.add(Chat.fromJson(item));
         }
-//print("chat list.. ${list}");
-      }
-
+      } else{
+        print("chat list.. ${convert.jsonDecode(response.body)['code']}");
+}
       return list;
+
     } catch (e) {
       rethrow;
     }
@@ -266,18 +275,17 @@ class EmomApi implements BaseServices {
 
       List<Task> list = [];
       //  print("${response.body}");
-
       // var respData = json.decode(response.body);
       // print(response.body);
       if (response.statusCode == 200) {
         for (var item in convert.jsonDecode(response.body)["data"]) {
-          list.add(Task.fromJson(item));
+         Task task= Task.fromJson(item);
+         task.notes=await veiwLogNote(tid: task.taskId);
+          list.add(task);
+
         }
       }
-      list.forEach((element) async {
-        element.notes = await veiwLogNote(tid: element.taskId);
-        //print('note ${element.notes}');
-      });
+     // list.forEach((element) async {element.notes = await veiwLogNote(tid: element.taskId);print('note ${element.notes.last.date}');});
 
       return list;
     } catch (e) {
@@ -293,7 +301,7 @@ class EmomApi implements BaseServices {
       http.Response response = await http.get("${_client}chat/get_user_list/",
           headers: {'Cookie': 'frontend_lang=en_US; session_id=$id'});
       List<Folowing> list = [];
-
+print('following ${response.body}');
       if (response.statusCode == 200) {
         for (var item in convert.jsonDecode(response.body)["data"]) {
           list.add(Folowing.fromJson(item));
@@ -345,10 +353,11 @@ class EmomApi implements BaseServices {
     try {
       http.Response response = await http.get("${_client}chat/get_new_messages",
           headers: {'Cookie': 'frontend_lang=en_US; session_id=$id'});
-      NewMessages newMessages;
+      NewMessages newMessages; print("resp ${response.body}");
       if (response.statusCode == 200) {
         newMessages = NewMessages.fromJson(json.decode(response.body)['data']);
         //   }
+
       }
       return newMessages;
     } catch (e) {
@@ -356,6 +365,7 @@ class EmomApi implements BaseServices {
     }
   }
 
+  @override
   Future<int> createTask({Task taskName, int projId}) async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
@@ -387,6 +397,7 @@ class EmomApi implements BaseServices {
     }
   }
 
+  @override
   Future<List<Project>> getMyProjects() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
@@ -409,8 +420,9 @@ class EmomApi implements BaseServices {
     }
   }
 
+  @override
   Future<List<Boards>> getMyBoards() async {
-    print(';;kl;lklk');
+    //print(';;kl;lklk');
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String id = localStorage.get('session_id');
     print('id $id');
@@ -419,7 +431,7 @@ class EmomApi implements BaseServices {
           "${_client}mom/get_my_boards",
           headers: {
             'Cookie': 'frontend_lang=en_US; session_id=$id'});
-      List<Boards> myBoards = List();
+      List<Boards> myBoards = [];//List();
       print("item.... ${response.statusCode}");
 
       // final body = json.decode(response.body);

@@ -11,7 +11,7 @@
   "emailvalidation": "User Name is empty",
   "home": "Home",
   "meetings": "Session",
-  "chat": "Chat",
+  "chat": "Conversations",
   "tasks": "Tasks",
   "more": "More",
   "bords": "Boards",
@@ -57,7 +57,7 @@
   "duration":"Duration",
   "agenda": "Agenda",
   "agreement":"Agreement ",
-  "projectTitle":"Project",
+  "projectTitle":"Projects",
   "projectTask":"Task",
   "description":"Description",
   "assignedTo":"Assigned To",
@@ -80,7 +80,10 @@
   "recom": "Recommendations",
   "sours": "Sours",
 "reject": "",
-  "search": "Search"
+  "search": "Search",
+  "addNew": "New Chat",
+"signout":"Sign Out",
+  "hchatEmpty": "Be closer to your team and start chatting with them through App by clicking on the icon below"
 
 }
 

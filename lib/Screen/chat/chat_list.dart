@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:management_app/app_theme.dart';
 import 'package:management_app/generated/I10n.dart';
+import 'package:management_app/model/app_model.dart';
 import 'package:management_app/model/channal.dart';
 import 'package:management_app/model/folowing.dart';
 import 'package:management_app/model/massege.dart';
 import 'package:management_app/model/note.dart';
 import 'package:management_app/model/user.dart';
 import 'package:management_app/widget/bulid_memberimage.dart';
+import 'package:management_app/widget/chat_list_widget.dart';
 import 'package:management_app/widget/content_translate.dart';
 import 'package:management_app/widget/flat_action_botton_wedget.dart';
 import 'package:management_app/widget/search.dart';
@@ -38,23 +40,27 @@ class _ChatListState extends State<ChatList> with TickerProviderStateMixin {
   Timer timer;
   List items;
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    checkForNewSharedLists();
+     checkForNewSharedLists();
     newmass =
-   // Provider.of<NewMessagesModel>(context, listen: false).newMessages
-    Provider.of<NewMessagesModel>(context, listen: false)
-        .newMessages
-          ==
-        null
-        ? -1
-        : Provider.of<NewMessagesModel>(context, listen: false)
-        .newMessages
-        .totalNewMessages;
+        // Provider.of<NewMessagesModel>(context, listen: false).newMessages
+        Provider.of<NewMessagesModel>(context, listen: false).newMessages ==
+                null
+            ? -1
+            : Provider.of<NewMessagesModel>(context, listen: false)
+                .newMessages
+                .totalNewMessages;
+    timer = Timer.periodic(Duration(seconds: 5), (Timer t) {
+      if (totalMessges > 0) {
+        print('totalMessges $totalMessges');
+        checkForNewSharedLists();
+    //    setState(() {});
+      }
+    });
   }
-
 
   @override
   void dispose() {
@@ -63,6 +69,7 @@ class _ChatListState extends State<ChatList> with TickerProviderStateMixin {
   }
 
   checkForNewSharedLists() {
+    AppModel().config(context);//when back update list chat screen
     items = chatHestoryList == null
         ? []
         : List.generate(
@@ -80,7 +87,8 @@ class _ChatListState extends State<ChatList> with TickerProviderStateMixin {
 
     chatHestoryList.forEach((userDetail) {
       if (userDetail.name.contains(text) ||
-          userDetail.lastMessage.contains(text)|| userDetail.name.toUpperCase().contains(text))
+          userDetail.lastMessage.contains(text) ||
+          userDetail.name.toUpperCase().contains(text))
         _searchResult.add(MessageItem(userDetail, null));
     });
 
@@ -95,111 +103,221 @@ class _ChatListState extends State<ChatList> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Consumer<ChatModel>(builder: (context, myCounter, _) {
       chatHestoryList = myCounter.chatsList;
-      checkForNewSharedLists();
+     // checkForNewSharedLists();
       return chatHestoryList == null
           ? Container()
           : Scaffold(
-              floatingActionButton: FlatActionButtonWidget(
-                icon: Icons.chat_outlined,
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ListUsers())),
-                tooltip: 'Chat',
-              ),
-              body: Column(children: [
-                search
-                    ? SearchWidget(
-                        controller: controller,
-                        onSearchTextChanged: onSearchTextChanged,
-                        onPressed: () {
-                          setState(() {
-                            search = false;
-                          });
-                          controller.clear();
-                          onSearchTextChanged('');
-                        },
-                      )
-                    : Container(),
-                Expanded(
-                  child: Container(
-                      margin: EdgeInsets.all(0.0),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 0.0,
-                          vertical: MediaQuery.of(context).size.width / 66),
-                      //width: 444,
-                      height: MediaQuery.of(context).size.height,
-                      child: ListView.separated(
-                        // Let the ListView know how many items it needs to build.
-                        itemCount: _searchResult.length != 0 ||
-                                controller.text.isNotEmpty
-                            ? _searchResult.length
-                            : chatHestoryList.length,
-                        //items.length,
-                        separatorBuilder: (context, index) => Padding(
-                          padding: EdgeInsets.only(left: 12),
-                          child: Divider(
-                            color: Colors.black26,
+          backgroundColor:MyTheme.kAccentColor,
+          // appBar: AppBar(title:ContentApp(code: 'chat',style: MyTheme.kAppTitle),backgroundColor: MyTheme.kPrimaryColorVariant,actions: [Icon(Icons.search)],) ,
+            //  floatingActionButton: 
+              body:Stack(
+                    children: [
+                      Column(children: [
+                        SafeArea(
+                      child: Material(
+                        elevation: 2.0,
+                        color:MyTheme.kPrimaryColorVariant,
+                        child:  Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 5),
+                          child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                                    child: ContentApp(code: 'chat',style: MyTheme.kAppTitle),
+                                  ),//TextStyle(fontSize: 32,fontWeight: FontWeight.bold),),
+                                  Container(
+                                    //padding: EdgeInsets.only(left: 8,right: 8,top: 2,bottom: 2),
+                                   // height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                     // color: Colors.amber[50],
+                                    ),
+                                    child: TextButton(
+
+                                        //on: Icons.chat_outlined,
+                                        onPressed: () {
+                                          setState(() {
+                                            search=search?false:true;
+                                          });
+                                        },
+                                    child:
+                                          Icon(Icons.search_rounded,color: Colors.white,size: 30),
+
+                                    ),
+                                  )
+                                ],
                           ),
                         ),
-                        // Provide a builder function. This is where the magic happens.
-                        // Convert each item into a widget based on the type of item it is.
-                        itemBuilder: (context, index) {
-                          final item = _searchResult.length != 0 ||
-                              controller.text.isNotEmpty
-                              ? _searchResult[index]
-                              : items[index];
-                          return Stack(children: [
-                           ListTile(
-                            dense: true,
-                            onTap: () {
-                              chatHestoryList[index].newMessage = false;
-                              // print(chatHestoryList[index].newMessage=false);
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  // settings: RouteSettings(name: "boo"),
-                                    builder: (context) =>
-                                        MyDirectChatDetailPage(
-                                            chatDetils:
-                                            chatHestoryList[index],
-                                            // ischatGroup: false,
-                                            isPrivetGroup: false,
-                                            newChat: false,
-                                            isChat:
-                                            chatHestoryList[index].isChat,
-                                            //member: chatHestoryList[index].members,
-                                            mid: chatHestoryList[index].id,
-                                            title: chatHestoryList[index]
-                                                .name //chatTitle()
-                                        )),
-                              );
-                            },
-                            leading: item.buildLeading(),
-                            title: item.buildTitle(context),
-                            subtitle: item.buildSubtitle(context),
-                            trailing: item.buildTrailing(context),
-                          ),
-                            chatHestoryList[index].newMessage != null
-                                ? chatHestoryList[index].newMessage
-                                    ? Padding(
-                                        padding: const EdgeInsets.all(14.0),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Icon(Icons.circle,
-                                              color: Color(0xffe9a14e)
-                                          ,size: 17,),
-                                        ),
-                                      )
-                                    : Container()
-                                : Container()
-                          ]);}
-
-                      )),
+                      ),
                 ),
-              ]));
+                        search?  SearchWidget(
+                                  controller: controller,
+                                  onSearchTextChanged: onSearchTextChanged,
+                                  onPressed: () {
+                                    controller.clear();
+                                    onSearchTextChanged('');
+                                  },
+                                ):
+                          Container(),
+                        chatHestoryList.isEmpty
+                            ? Container(
+                          margin: EdgeInsets.only(top: 120),
+                          padding: EdgeInsets.all(33),
+                          //width: 200,alignment: Alignment.center,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: ContentApp(
+                              code: 'hchatEmpty',
+                              style:
+                              TextStyle(fontSize: 22, color: Colors.grey[400]),
+                            ),
+                          ),
+                        )
+                            :   Expanded(
+                            child: Container(
+                               // margin: EdgeInsets.all(0.0),
+                                //width: 444,
+                                height: MediaQuery.of(context).size.height,
+                                child: ListView.separated(
+                                    padding: EdgeInsets.only(top: 8),
+
+                                    // Let the ListView know how many items it needs to build.
+                                    itemCount: _searchResult.length != 0 ||
+                                            controller.text.isNotEmpty
+                                        ? _searchResult.length
+                                        : chatHestoryList.length,
+                                    //items.length,
+                                    separatorBuilder: (context, index) => Padding(
+                                          padding: EdgeInsets.only(
+                                              left: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  6.5),
+                                          //bottom: MediaQuery.of(context).size.width / 66),
+                                          child: Divider(
+                                            color: Colors.black26,
+                                          ),
+                                        ),
+                                    // Provide a builder function. This is where the magic happens.
+                                    // Convert each item into a widget based on the type of item it is.
+                                    itemBuilder: (context, index) {
+                                      // print("total massges.. ${chatHestoryList[index].newMessages}");
+                                      return Container(
+                                        height: 60,
+                                        child: TextButton(
+                                          onPressed: () {
+                                            chatHestoryList[index].newMessage = false;
+                                            print(chatHestoryList[index].newMessage);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  // settings: RouteSettings(name: "boo"),
+                                                  builder: (context) =>
+                                                      MyDirectChatDetailPage(
+                                                          chatDetils:
+                                                              chatHestoryList[index],
+                                                          // ischatGroup: false,
+                                                          isPrivetGroup: false,
+                                                          newChat: false,
+                                                          isChat:
+                                                              chatHestoryList[index]
+                                                                  .isChat,
+                                                          //member: chatHestoryList[index].members,
+                                                          mid: chatHestoryList[index]
+                                                              .id,
+                                                          title:
+                                                              chatHestoryList[index]
+                                                                  .name
+                                                          //chatTitle(chatHestoryList[index].name)
+                                                          )),
+                                            );
+                                          },
+                                          child: ConversationList(
+                                              name: chatHestoryList[index].name,
+                                              messageText:
+                                                  chatHestoryList[index].lastMessage,
+                                              imageUrl: chatHestoryList[index].id,
+                                              time: chatHestoryList[index].lastDate,
+                                              numberMessgeUnread:
+                                                  chatHestoryList[index].newMessages,
+                                              isMessageRead: chatHestoryList[index]
+                                                          .newMessage !=
+                                                      null
+                                                  ? chatHestoryList[index].newMessage
+                                                  : false
+
+                                              //  ?
+                                              //item.buildNewMessege(3,context)
+                                              //   chatHestoryList[index].newMessages ),
+                                              //   )
+
+                                              //   : Container()
+                                              //   : Container(),
+                                              ),
+                                        ),
+                                      );
+                                      /* return Stack(children: [
+                               ListTile(
+                                dense: true,
+                                onTap: () {
+                                  chatHestoryList[index].newMessage = false;
+                                  // print(chatHestoryList[index].newMessage=false);
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      // settings: RouteSettings(name: "boo"),
+                                        builder: (context) =>
+                                            MyDirectChatDetailPage(
+                                                chatDetils: chatHestoryList[index],
+                                                // ischatGroup: false,
+                                                isPrivetGroup: false,
+                                                newChat: false,
+                                                isChat:
+                                                chatHestoryList[index].isChat,
+                                                //member: chatHestoryList[index].members,
+                                                mid: chatHestoryList[index].id,
+                                                title: chatHestoryList[index].name
+                                                //chatTitle(chatHestoryList[index].name)
+                                            )),
+                                  );
+                                },
+                                leading: item.buildLeading(),
+                                title: Row(crossAxisAlignment:CrossAxisAlignment.start,children: [item.buildTitle(context),Expanded(child: SizedBox(width: 12,)),item.buildTrailing(context)]),
+                                subtitle: Row(crossAxisAlignment:CrossAxisAlignment.end,children: [ item.buildSubtitle(context),Expanded(child: SizedBox(width: 12,)),item.buildNewMessege(3,context)])
+                                //trailing:
+                              ),
+                                //chatHestoryList[index].newMessage != null
+                                   // ? chatHestoryList[index].newMessage
+                                     //  ?
+                                //item.buildNewMessege(3,context)
+                                           //   chatHestoryList[index].newMessages ),
+                                     //   )
+
+                                     //   : Container()
+                                 //   : Container()
+                              ]);*/
+                                    })),
+                          ),
+                        ]),
+                      Positioned(
+                        left: MediaQuery.of(context).size.width/1.5,
+                        top:MediaQuery.of(context).size.height/1.2 ,
+                        child: FlatActionButtonWidget(
+
+                          icon: Icons.chat_bubble_outline_outlined,
+                          onPressed: () => Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => ListUsers())),
+
+                        ),
+                      ),
+                    ],
+                  ));
     }); //);
     // });
   }
 }
+
 /// The base class for the different types of items the list can contain.
 abstract class ListItem {
   /// The title line to show in a list item.
@@ -211,6 +329,8 @@ abstract class ListItem {
   Widget buildLeading();
 
   Widget buildTrailing(BuildContext context);
+
+  buildNewMessege(int n, context);
 }
 
 /// A ListItem that contains data to display a message.
@@ -220,11 +340,10 @@ class MessageItem implements ListItem {
 
   MessageItem(this.item, this.isFolowing);
 
-  Widget buildLeading() => MembertImage(item: item.image
-      .toString());
+  Widget buildLeading() => MembertImage(item: item);
 
   Widget buildTitle(BuildContext context) {
-    if(item.runtimeType==Note){
+    if (item.runtimeType == Note) {
       return Row(
         children: [
           Text(
@@ -232,16 +351,38 @@ class MessageItem implements ListItem {
             style: MyTheme.heading2,
           ),
           SizedBox(width: 10),
-          Text("-  ${DateFormat.yMMMd().format(DateTime.parse(item.date))}", style: MyTheme.dateStyle)
+          Text("-  ${DateFormat.yMMMd().format(DateTime.parse(item.date))}",
+              style: MyTheme.dateStyle)
         ],
       );
-    }else
-    {
+    } else {
       return Text(
-         item.name, //item[index].name,
+        item.name, //item[index].name,
         style: MyTheme.heading2,
       );
     }
+  }
+
+  Widget buildNewMessege(int number, context) {
+    return Positioned(
+      //top: 0.0,
+      left: MediaQuery.of(context).size.height / 2.3,
+
+      child: Container(
+        height: 20,
+        width: 20,
+        decoration: BoxDecoration(
+          color: MyTheme.kUnreadChatBG,
+          borderRadius: BorderRadius.all(Radius.circular(40)),
+        ),
+        child: Center(
+          child: Text(
+            "$number",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildSubtitle(BuildContext context) {
@@ -279,10 +420,6 @@ class CreateGruope extends StatefulWidget {
 
   @override
   _CreateGruopeState createState() => _CreateGruopeState();
-}
-
-String chatTitle(str) {
-  return "${str[0].toUpperCase()}${str.substring(1)}";
 }
 
 class _CreateGruopeState extends State<CreateGruope> {
@@ -334,7 +471,8 @@ class _CreateGruopeState extends State<CreateGruope> {
     return Scaffold(
       backgroundColor: MyTheme.kAccentColor,
       appBar: AppBar(
-        title: ContentApp(code: 'new group'),
+          backgroundColor: MyTheme.kPrimaryColorVariant,
+        title: ContentApp(code: 'new group', style:TextStyle(color: Colors.white)),
       ),
       floatingActionButton: FlatActionButtonWidget(
         onPressed: () => validateInput(),
@@ -389,9 +527,10 @@ class _CreateGruopeState extends State<CreateGruope> {
             ),
           ),
           Container(
-            color: Colors.white,
-            height: 300,
+            color:MyTheme.kAccentColor,
+            height: MediaQuery.of(context).size.height,
             child: ListView.separated(
+                padding: EdgeInsets.zero,
                 controller: _controller,
                 shrinkWrap: true,
                 separatorBuilder: (context, index) => Padding(
@@ -403,12 +542,15 @@ class _CreateGruopeState extends State<CreateGruope> {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
-                  return Row(
-                    children: [
-                      item.buildLeading(),
-                      item.buildTitle(context),
-                    ],
-
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        item.buildLeading(),
+                        SizedBox(width: 12,),
+                        item.buildTitle(context),
+                      ],
+                    ),
                   );
                 }),
           )
@@ -463,10 +605,9 @@ class _ListUsersState extends State<ListUsers> {
   @override
   void initState() {
     listFolow = Provider.of<FollowingModel>(context, listen: false).followList;
-
+//print('....  ${listFolow[0]}');
     items = List.generate(
-      listFolow.length,
-      (i) => MessageItem(listFolow[i], null),
+      listFolow.length, (i) => MessageItem(listFolow[i], null),
     );
     isChecked = List<bool>.filled(items.length, false);
     super.initState();
@@ -514,15 +655,16 @@ class _ListUsersState extends State<ListUsers> {
             )
           : Container(),
       appBar: AppBar(
+        backgroundColor: MyTheme.kPrimaryColorVariant,
         // leading: ,
-        title: Text('New Chat'),
+        title: ContentApp(code:'addNew', style:TextStyle(color: Colors.white)),
       ),
       body: Column(
         children: [
           newgruop
               ? Container()
-              : FlatButton(
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              : TextButton(
+                  //materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   onPressed: () {
                     setState(() {
                       newgruop = true;
@@ -536,8 +678,8 @@ class _ListUsersState extends State<ListUsers> {
                 ),
           newgruop
               ? Container()
-              : FlatButton(
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              : TextButton(
+                  //materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   onPressed: () {
                     setState(() {
                       newgruop = true;
@@ -565,6 +707,7 @@ class _ListUsersState extends State<ListUsers> {
 
   listMember() {
     return ListView.separated(
+      padding: EdgeInsets.only(top: 8),
       separatorBuilder: (context, index) => Padding(
         padding: EdgeInsets.symmetric(horizontal: 12),
         child: Divider(
@@ -576,7 +719,7 @@ class _ListUsersState extends State<ListUsers> {
       // Provide a builder function. This is where the magic happens.
       // Convert each item into a widget based on the type of item it is.
       itemBuilder: (context, index) {
-        //print(oldChat);
+        print(items[index]);
         final item = items[index];
         return newgruop
             ? CheckboxListTile(

@@ -56,6 +56,7 @@ class TaskModel with ChangeNotifier {
   TaskModel(this.userTasks);
   getUserTasks(projectid) async {
     userTasks= await EmomApi().getUserTask(projectid);
+
     orderTaskByStage();
     return userTasks;
   }
@@ -91,7 +92,7 @@ return taskId;
   }
 
   void orderTaskByStage() {
-    userTasks.sort((a,b) =>b.createDate.compareTo(a.createDate)
+    userTasks.sort((a,b) =>b.notes.first.date.compareTo(a.notes.first.date)
     // if( a.taskStage=='Done'||  a.taskStage=='Close'|| a.taskStage=='done'){
 
      //} }

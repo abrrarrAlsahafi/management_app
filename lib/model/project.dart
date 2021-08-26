@@ -36,12 +36,16 @@ class ProjectModel with ChangeNotifier {
 
   getUserProjects() async {
     userProject = await EmomApi().getMyProjects();
+    notifyListeners();
+
     return userProject;
   }
 
   taskCount(proId) async {
     List tasks = await EmomApi().getUserTask(proId);
     return tasks.length;
+  //  notifyListeners();
+
   }
 
   nameOfProject(pid) {
@@ -53,5 +57,6 @@ class ProjectModel with ChangeNotifier {
     });
 
     return nameProject;
+
   }
 }

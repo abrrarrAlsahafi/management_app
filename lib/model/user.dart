@@ -31,7 +31,7 @@ class UserModel with ChangeNotifier {
   }
 
   Future<void> saveUser(User user) async {
-    getUser();
+   // getUser();
 
     this.user = user;
     print('save user ${user.pass}');
@@ -40,27 +40,36 @@ class UserModel with ChangeNotifier {
       // save to Preference
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('loggedIn', true);
+
       // save the user Info as local storage
       final ready = await storage.ready;
+
+      print("ready 1 ${user.toJson()}");
       if (ready) {
-        await storage.setItem(kLocalKey["userInfo"], user);
-        // print("save ${user.isAdmin}");
+        await storage.setItem('userInfo', user);
+       // print("save 2 ${user.name}");
+        //print("save 2 ${storage.getItem(kLocalKey["userInfo"])}");
+
       }
     } catch (err) {
-      print(err);
+      print('erorr 1 $err');
     }
   }
 
   Future<void> getUser() async {
-    // print('getUser');
+    print('getUser');
     final LocalStorage storage = LocalStorage("emomApp");
     try {
       final ready = await storage.ready;
-
       if (ready) {
-        final json = storage.getItem(kLocalKey["userInfo"]);
+        print("ready $ready");
+
+        final json = storage.getItem("userInfo");
+        print("ready $json");
+
         if (json != null) {
           user = User.fromJson(json);
+          print(user);
           loggedIn = true;
           notifyListeners();
         }
@@ -160,7 +169,7 @@ class UserModel with ChangeNotifier {
     try {
       final ready = await storage.ready;
       if (ready) {
-        final json = storage.getItem(kLocalKey["userInfo"]);
+        final json = storage.getItem("userInfo");
         return json != null;
       }
       return false;
@@ -176,11 +185,11 @@ class User {
   bool isSystem;
   bool isAdmin;
   UserContext userContext;
-  String db;
-  String serverVersion;
+  var db;
+  var serverVersion;
   List serverVersionInfo;
-  String name;
-  String username;
+  var name;
+  var username;
   var partnerDisplayName;
   var companyId;
   var partnerId;
@@ -297,9 +306,9 @@ class User {
 }
 
 class UserContext {
-  String lang;
-  String tz;
-  int uid;
+  var lang;
+  var tz;
+  var uid;
 
   UserContext({this.lang, this.tz, this.uid});
 
@@ -319,13 +328,13 @@ class UserContext {
 }
 
 class UserCompanies {
-  List<int> currentCompany;
-  List<List> allowedCompanies;
+  List currentCompany;
+  List allowedCompanies;
 
   UserCompanies({this.currentCompany, this.allowedCompanies});
 
   UserCompanies.fromJson(Map<String, dynamic> json) {
-    currentCompany = json['current_company'].cast<int>();
+    currentCompany = json['current_company'];
     if (json['allowed_companies'] != null) {
       allowedCompanies = []; //new List<List>();
       json['allowed_companies'].forEach((v) {

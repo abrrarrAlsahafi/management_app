@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const kLocalKey = {
   "url": "",
-  "userInfo": 1,
+  "userInfo": "userInfo",
   "home": "home",
 };
 const kAdvanceConfig = {

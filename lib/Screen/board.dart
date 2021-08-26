@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:management_app/model/app_model.dart';
 import 'package:management_app/model/board.dart';
 import 'package:management_app/widget/card_list.dart';
+import 'package:management_app/widget/content_translate.dart';
 import 'package:management_app/widget/search.dart';
 import 'package:management_app/widget/subtitel_wedget.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +76,7 @@ class _BoardScreenState extends State<BoardScreen> {
     // setState(() {
     //project.noOfTask=result;
     //});
-    AppModel().config(context, false);
+    AppModel().config(context);
 
     if (result) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -91,27 +92,68 @@ class _BoardScreenState extends State<BoardScreen> {
 
   @override
   Widget build(BuildContext context) {
-print(_userDetails);
-    return Scaffold(
-    //  floatingActionButton: FlatActionButtonWidget(  onPressed: (){},   icon: Icons.add,  ),
-      body: Column(children: [
-        search
-            ? SearchWidget(
-                controller: controller,
-                onSearchTextChanged: onSearchTextChanged,
-                onPressed: () {
-                  setState(() {
-                    search = false;
-                  });
-                  controller.clear();
-                  onSearchTextChanged('');
-                },
-              )
-            : Container(),
+//print(_userDetails);
+    return  Column(children: [
+        SafeArea(
+          child: Material(
+            elevation: 2.0,
+            color:MyTheme.kPrimaryColorVariant,
+            child:  Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    child: ContentApp(code: 'bords',style: MyTheme.kAppTitle),
+                  ),//TextStyle(fontSize: 32,fontWeight: FontWeight.bold),),
+                  Container(
+                    //padding: EdgeInsets.only(left: 8,right: 8,top: 2,bottom: 2),
+                    // height: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      // color: Colors.amber[50],
+                    ),
+                    child: TextButton(
+
+                      //on: Icons.chat_outlined,
+                      onPressed: () {
+                        setState(() {
+                          search=search?false:true;
+                        });
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.search_rounded,color: Colors.white,size: 30),
+                          // SizedBox(width: 2,),
+                          // ContentApp(code: 'addNew',style: TextStyle( fontSize: 14,fontWeight: FontWeight.bold, color: MyTheme.kUnreadChatBG),),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      search?  SearchWidget(
+          controller: controller,
+          onSearchTextChanged: onSearchTextChanged,
+          onPressed: () {
+            setState(() {
+              search = false;
+
+            });
+            controller.clear();
+            onSearchTextChanged('');
+          },
+        ):Container(),
         Expanded(
-            child: Container(
+            child:_userDetails==null?Container(): Container(
                 height: MediaQuery.of(context).size.height / 1.49,
                 child: ListView.builder(
+                    padding: EdgeInsets.only(top: 8),
+
                     itemCount:
                         _searchResult.length != 0 || controller.text.isNotEmpty
                             ? _searchResult.length
@@ -140,7 +182,7 @@ print(_userDetails);
                                     style: MyTheme.bodyText1,
                                   ),
                                   // dense: true,
-                                  SizedBox(height: 6),
+                                  Expanded(child: SizedBox(height: 6)),
                                   Container(
                                       child: SubTitelWidget(
                                           child: Icon(
@@ -161,7 +203,7 @@ print(_userDetails);
                             ),
                           ));
                     })))
-      ]),
+      ]
     );
   }
 }

@@ -1,118 +1,10 @@
-/*
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'model/user.dart';
-
-class OnlineRoot extends StatefulWidget {
-  @override
-  _OnlineRootState createState() => _OnlineRootState();
-}
-enum AuthStatus { unknown, notLoggedIn, loggedIn }
-
-
-class _OnlineRootState extends State<OnlineRoot> {
-  AuthStatus _authStatus = AuthStatus.unknown;
-  String currentUid;
-  final  _firebaseMessaging = FirebaseMessaging();
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (Platform.isIOS) {
-      _firebaseMessaging .requestNotificationPermissions(IosNotificationSettings());
-      _firebaseMessaging.onIosSettingsRegistered.listen((event) {print("IOS Registered");});
-    }
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-      },
-    );
-  }
-
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-
-    //get the state, check current User, set AuthStatus based on state
-    AuthModel _authStream = Provider.of<AuthModel>(context);
-    if (_authStream != null) {
-      setState(() {
-        _authStatus = AuthStatus.loggedIn;
-        currentUid = _authStream.uid;
-      });
-    } else {
-      setState(() {
-        _authStatus = AuthStatus.notLoggedIn;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget retVal;
-
-    switch (_authStatus) {
-      case AuthStatus.unknown:
-        retVal = SplashScreen();
-        break;
-      case AuthStatus.notLoggedIn:
-        retVal = Login();
-        break;
-      case AuthStatus.loggedIn:
-        retVal = StreamProvider<UserModel>.value(value:
-        DBStream().getCurrentUser(currentUid),
-          child: LoggedIn(),
-        );
-        break;
-      default:
-    }
-    return retVal;
-  }
-}
-
-class LoggedIn extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    UserModel _userStream = Provider.of<UserModel>(context);
-    Widget retVal;
-    if (_userStream != null) {
-      if (_userStream.groupId != null) {
-        retVal = StreamProvider<GroupModel>.value(
-          value: DBStream().getCurrentGroup(_userStream.groupId),
-          child: InGroup(),
-        );
-      } else {
-        retVal = NoGroup();
-      }
-    } else {
-      retVal = SplashScreen();
-    }
-
-    return retVal;
-  }
-}
-*/
-
-
-
 import 'dart:async';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:management_app/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -122,6 +14,7 @@ import 'Screen/profile.dart';
 import 'Screen/tasks.dart';
 import 'bottom_bar.dart';
 import 'generated/I10n.dart';
+import 'main.dart';
 import 'model/app_model.dart';
 import 'model/board.dart';
 import 'model/channal.dart';
@@ -130,7 +23,6 @@ import 'model/massege.dart';
 import 'model/project.dart';
 import 'model/task.dart';
 import 'model/user.dart';
-import 'notification_test.dart';
 import 'services/emom_api.dart';
 import 'services/index.dart';
 
@@ -158,9 +50,37 @@ class MyApp extends StatefulWidget {
   Locale get local {
     return locale;
   }
+
+
 //getLocale()=>locale;
 }
 
+
+void scheduleAlarm(
+   // DateTime scheduledNotificationDateTime,  alarmInfo
+    ) async {
+  var sche=DateTime.now().add(Duration(minutes: 1));
+  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    'alarm_notif',
+    'alarm_notif',
+    'Channel for Alarm notification',
+    icon: 'codex_logo',
+   // sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
+   // largeIcon: DrawableResourceAndroidBitmap('ic_launcher'),
+  );
+
+  var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+      sound: 'a_long_cold_sting.wav',
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true);
+
+  var platformChannelSpecifics = NotificationDetails(
+      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+  await flp.schedule(0, 'Office', 'sche',//alarmInfo.title,
+      sche, platformChannelSpecifics);
+}
 
 
 class _MyAppState extends State<MyApp> {
@@ -212,6 +132,8 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => NewMessagesModel()),
           ChangeNotifierProvider(create: (context) => ProjectModel()),
           ChangeNotifierProvider(create: (context)=> BoardsModel()),
+          ChangeNotifierProvider(create: (context)=> BottomNavigationBarProvider()),
+         // BottomNavigationBarProvider
         ],
         child: StreamProvider<User>.value(
             value: Services().user,
@@ -234,8 +156,11 @@ class _MyAppState extends State<MyApp> {
                   textTheme:
                   GoogleFonts.tajawalTextTheme(Theme.of(context).textTheme),
                   backgroundColor: Color(0xfff3f6fc),
-                  primaryColor: Color(0xff336699),
-                  buttonColor: Color(0xff336699),
+                  appBarTheme: AppBarTheme(
+                    color: MyTheme.kPrimaryColorVariant
+                  ),
+                  //primaryColor: Color(0xff336699),
+                //  buttonColor: Color(0xff336699),
                   canvasColor: Colors.transparent),
               routes: <String, WidgetBuilder>{
                 '/root': (BuildContext context) => Roots(flp: widget.appLanguage,),
@@ -244,8 +169,7 @@ class _MyAppState extends State<MyApp> {
                 '/b': (BuildContext context) => LoginPage(),
                 '/d': (BuildContext context) => Profile(),
                 '/chat': (BuildContext context) => ChatList(),
-                '/task': (BuildContext context) =>
-                    TaskScreen(projectid: projectid),
+                '/task': (BuildContext context) => TaskScreen(projectid: projectid),
 
               },
               home: Roots(flp: widget.appLanguage),
@@ -279,12 +203,13 @@ class Roots extends StatefulWidget {
 var isLoggedIn;
 
 
-class _RootsState extends State<Roots> {
+class _RootsState extends State<Roots> with WidgetsBindingObserver {
   Timer timer ,timer1;
   bool notification = false;
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     // TODO: implement initState
     super.initState();
     //DateTime.now().add(Duratio)
@@ -293,8 +218,9 @@ class _RootsState extends State<Roots> {
      { Future.delayed(const Duration(seconds: 1), () {
         cheackIsLoggedIn();
       });
-   }
-    timer= Timer.periodic(Duration(seconds:5), (Timer t) {
+   }//else{
+      //AppModel().config(context);
+      timer= Timer.periodic(Duration(seconds:5), (Timer t) {
     //  print(isLoggedIn);
    if(isLoggedIn!=null){
      if(isLoggedIn){
@@ -306,12 +232,14 @@ class _RootsState extends State<Roots> {
    //    });
      }
     }});
-  }
+  }//}
 
   @override
   void dispose() {
     timer?.cancel();
-   // timer1.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+
+    // timer1.cancel();
     // TODO: implement dispose
     super.dispose();
   }
@@ -404,20 +332,17 @@ cheackIsLoggedIn() async {
   //
   print("$status ${prefs.getBool('isLoggedIn')} ${prefs.getString('email')} ${prefs.getString('pass')}");
   if (status ) {
-    var user = await EmomApi().login(context, username: prefs.getString('email'), password: prefs.getString('pass'));
-    //print(user.runtimeType);
-    if(user.runtimeType!=User){
+    var user ;//= await EmomApi().login(context, username: prefs.getString('email'), password: prefs.getString('pass'));
+    print(user.runtimeType);
+  // if(user.runtimeType!=User){setState(() {status=false;prefs.clear();});} else{
+      Provider.of<UserModel>(context, listen: false).getUser();
+      AppModel().config(context);
       setState(() {
-        status=false;
-        prefs.clear();
+
       });
-    }
-    else{
-      Provider.of<UserModel>(context, listen: false).saveUser(user);
-      AppModel().config(context, true);
       checkForNewSharedLists(context);
 
-    }
+  // }
   }
   setState(() {
     isLoggedIn = status;
@@ -434,7 +359,7 @@ cheackIsLoggedIn() async {
       if ( isLoggedIn==null|| snapshot.hasError) {
         // print('taskList  ${taskList}');
         return Scaffold(
-          appBar: AppBar(),
+          //appBar: AppBar(),
           backgroundColor: Color(0xfff3f6fc),
           body: Center(
             child: CircularProgressIndicator(
@@ -451,7 +376,7 @@ cheackIsLoggedIn() async {
         return LoginPage();
       }
       else return Scaffold(
-        appBar: AppBar(),
+       // appBar: AppBar(),
         backgroundColor: Color(0xfff3f6fc),
         body: Center(
           child: CircularProgressIndicator(
@@ -466,57 +391,14 @@ cheackIsLoggedIn() async {
 
 
 
-  checkForNewSharedLists(context) async {
-    //WidgetsBinding.instance.addPostFrameCallback((_) async {
-    // if(totalMessges == -1){
-    totalMessges = await Provider.of<NewMessagesModel>(context, listen: false).newMessagesList(context);
-    setState(() {});
-    if (mounted) {
-    // setState (() => checkForNewSharedLists(context));
-    }
 
-    if (totalMessges > 0) {
-      if(newMsList.isEmpty){
-        setState(() {
-          notification=true;
-        });
-        getnewMasseges(context);
-        print('notification ===============');
-      }else {
-        if (newMsList.last.lastMessage == Provider
-            .of<NewMessagesModel>(context, listen: false)
-            .newMessages
-            .channelMessages
-            .last
-            .lastMessage) {
-        // setState(() {
-            notification = false;
-        // });
-       //   getnewMasseges(context);
-          print('notification stop');
-        }else{
-          setState(() {
-            notification=true;
-       });
-
-        }
-        getnewMasseges(context);
-
-      }
-    }
-    // });
-    /* newMessege = await Provider.of<NewMessagesModel>(context, listen: false).newMessagesList();
-   setState(() {
-      totalMessges = newMessege.totalNewMessages;
-  });*/
-  }
   var temberory;
 
   turnOnNotification(){
     //  newMsList.last.lastMessage==null?
   }
-  List<ChannelMessages> newMsList=[];
-  getnewMasseges(context){
+  List<Chat> newMsList=[];
+/*  getnewMasseges(context){
     checkForNewSharedLists(context);
     if (Provider.of<NewMessagesModel>(context, listen: false)
         .newMessages
@@ -530,7 +412,7 @@ cheackIsLoggedIn() async {
       //List<ChannelMessages> temp=newMsList
       newMsList.forEach((element) {
         Provider.of<ChatModel>(context, listen: false).chatsList.forEach((e) {
-          if (e.id == element.channelId) {
+          if (e.id == element.id) {
        //  setState(() {
             e.newMessage = true;
             e.lastMessage = element.lastMessage;
@@ -545,18 +427,27 @@ cheackIsLoggedIn() async {
             // });
 
           } else {
-            e.newMessage = false;
+          //  e.newMessage = false;
             // Provider.of<ChatModel>(context, listen: false)
             Provider.of<ChatModel>(context, listen: false).orderByLastAction();
           }
         });
       });
     }
-  }
+  }*/
 
 }
 
 
+checkForNewSharedLists(context) async {
+  //WidgetsBinding.instance.addPostFrameCallback((_) async {
+  // if(totalMessges == -1){
+  totalMessges = await Provider.of<NewMessagesModel>(context, listen: false).newMessagesList(context);
 
+
+  // });
+  //  newMessege = await Provider.of<NewMessagesModel>(context, listen: false).newMessagesList();
+  // setState(() {totalMessges = newMessege.totalNewMessages;});
+}
 
 

@@ -6,6 +6,7 @@ import 'common/constant.dart';
 class MyTheme {
   MyTheme._();
 
+  static List colors=[hexToColor('#74788d')];//, Colors.black45, Colors.indigo];
   //static Color kPrimaryColor = Color(0xff7C7B9B);
   static Color kPrimaryColorVariant = Color(0xff336699);
   static Color kAccentColor = Color(0xfff3f6fc);
@@ -13,17 +14,17 @@ class MyTheme {
   static Color kUnreadChatBG = Color(0xffe9a14e);
 
   static final TextStyle kAppTitle = GoogleFonts.tajawal(
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: FontWeight.bold,
-      color:Colors.white );
+      color: Colors.white);
   static final TextStyle heading2 = TextStyle(
     color: Colors.black,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: FontWeight.bold,
   );
   static final TextStyle chatSenderName = TextStyle(
     color: Colors.black38,
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: FontWeight.bold,
     //letterSpacing: 1.5,
   );
@@ -51,7 +52,7 @@ class MyTheme {
     color: Colors.grey[400],
   );
   static final TextStyle bodyTextTime = TextStyle(
-    color: Colors.grey[200],
+    color: Colors.blue,
     fontSize: 11,
     fontWeight: FontWeight.bold,
   );

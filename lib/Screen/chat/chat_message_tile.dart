@@ -26,6 +26,7 @@ class MyMessageChatTile extends StatelessWidget {
       this.datesend, this.isChat});
   @override
   Widget build(BuildContext context) {
+   // print(datesend);
     return Align(
           alignment: (isCurrentUser?Alignment.topRight:Alignment.topLeft),
           child: Container(
@@ -87,22 +88,25 @@ class MDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  //  print(dateToCheck);
     final DateTime now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final today = DateTime(now.year, now.month, now.day,now.hour,now.minute);
     final yesterday = DateTime(now.year, now.month, now.day - 1);
     final daybefor = DateTime(now.year, now.month, now.day - 2);
-    final aDate = DateTime(dateToCheck.year, dateToCheck.month, dateToCheck.day);
-    if(aDate == today) {
-    //  print("$aDate  $today");
+    final aDate = DateTime(dateToCheck.year, dateToCheck.month,dateToCheck.day,dateToCheck.hour, dateToCheck.minute);
+   // print("mmm $aDate , $today ");
+
+    if(aDate.day == today.day) {
       return Text('${DateFormat.jm().format(aDate).toString()}', style: TextStyle(
-          fontSize: 7, color: Colors.grey));
-    } else if(aDate == yesterday ) {
+          fontSize: 7, color: Colors.grey,fontWeight: FontWeight.bold));
+    } else if(aDate.day == yesterday.day ) {
      // print("$yesterday");
       return Text("yesterday",style: TextStyle(
           fontSize: 7, color: Colors.grey), );
-  } else if(aDate == daybefor ) {
-  // print("$yesterday");
-  return Text("${DateFormat('EEEE').format(aDate).toString()}",style: TextStyle(
+  } else if(aDate.day == daybefor.day ) {
+      //print("$aDate");
+  return Text("${DateFormat('EEEE').format(aDate).toString()}",
+    style: TextStyle(
   fontSize: 7, color: Colors.grey), );
   }else {
       return Text("${DateFormat('yMd').format(aDate).toString()}",style:

@@ -1,7 +1,6 @@
 import 'package:management_app/Screen/tasks.dart';
 import 'package:management_app/common/constant.dart';
 import 'package:management_app/generated/I10n.dart';
-import 'package:management_app/model/folowing.dart';
 import 'package:management_app/model/project.dart';
 import 'package:management_app/model/task.dart';
 import 'package:management_app/widget/content_translate.dart';
@@ -23,18 +22,18 @@ class _CreateScreenState extends State<CreateScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
   Task _task = Task();
-  String _selectedItem;
-  List<DropdownMenuItem<String>> _dropdownMenuItems;
+  //String _selectedItem;
+  //List<DropdownMenuItem<String>> _dropdownMenuItems;
   String projectName;
   List<String> _dropdownItems = [];
-  String _chosenValue;
+  //String _chosenValue;
 
   void initState() {
     super.initState();
     projectName = Provider.of<ProjectModel>(context, listen: false)
         .nameOfProject(widget.projectid);
 
-    _chosenValue =Provider.of<FollowingModel>(context,listen: false).followList[0].name;
+    //_chosenValue =Provider.of<FollowingModel>(context,listen: false).followList[0].name;
     //_dropdownItems=['Project X','Project B'];
     // _dropdownMenuItems = buildDropDownMenuItems(_dropdownItems);
     // _selectedItem=_dropdownMenuItems[0].value;
@@ -53,6 +52,7 @@ class _CreateScreenState extends State<CreateScreen> {
     return items;
   }
   bool isManeger=false;
+
   @override
   Widget build(BuildContext context) {
     if (widget.item.runtimeType == Task) return buildTaskForm();

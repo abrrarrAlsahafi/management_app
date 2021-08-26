@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../app_theme.dart';
 import 'content_translate.dart';
 
+// ignore: must_be_immutable
 class CardListWidget extends StatelessWidget {
   final titelCollunm;
   var countNumber;
@@ -12,6 +13,7 @@ class CardListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+        color: Colors.white,
         margin: EdgeInsets.symmetric(vertical: 6),
         elevation: 2,
         child: ClipPath(
@@ -36,22 +38,22 @@ class CardListWidget extends StatelessWidget {
                     MainAxisAlignment.center,
                     children: [
                       Container(
-                        width: 44,
-                        height: 44,
+                        width: 40,
+                        height: 40,
                         child: Center(
                             child: countNumber),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: MyTheme.kPrimaryColorVariant),
                       ),
-                      SizedBox(height: 6),
+                      Expanded(child: SizedBox(height: 6)),
                       ContentApp(
                           code: countName,
                           style: MyTheme.heading2)
                     ])
               ],
             ),
-            height: 100,
+            height: 86,
             //  decoration: BoxDecoration(  border: Border(right: BorderSide(color: Color(0xffe9a14e), width: 5))),
           ),
           clipper: ShapeBorderClipper(

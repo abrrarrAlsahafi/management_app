@@ -14,7 +14,7 @@ class RootPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Container(
       /* appBar: AppBar(
         backgroundColor: const Color(0xff336699),
         leading: null,
@@ -62,7 +62,7 @@ class RootPage extends StatelessWidget {
       ),
       backgroundColor: hexToColor('#F3F6FC'),
      */
-      body: route.page,
+      child: route.page,
     );
   }
 }

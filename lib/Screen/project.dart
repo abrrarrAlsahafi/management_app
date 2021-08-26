@@ -40,8 +40,11 @@ class _ProjectsState extends State<Projects> {
     super.dispose();
   }
 
-  getMyProjects()  {
-    _userDetails= Provider.of<ProjectModel>(context, listen: false).userProject;
+  getMyProjects()  async {
+    _userDetails= await Provider.of<ProjectModel>(context, listen: false).getUserProjects();
+  setState(() {
+
+  });
   }
 
   onSearchTextChanged(String text) async {
@@ -74,7 +77,7 @@ class _ProjectsState extends State<Projects> {
 
 
       if(result) {
-        AppModel().config(context, false);
+        AppModel().config(context);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: [
@@ -83,82 +86,129 @@ class _ProjectsState extends State<Projects> {
                  style: MyTheme.Snacbartext),
               Text('${project.name}',style: MyTheme.Snacbartext)
             ],
-          ), duration: Duration(seconds: 4),backgroundColor: MyTheme.kUnreadChatBG,));
+          ), duration: Duration(seconds: 4),
+          backgroundColor: MyTheme.kUnreadChatBG,));
       }//return result;
   }
     @override
   Widget build(BuildContext context) {
-    return Consumer<ProjectModel>(
-        builder: (context, project,child) {
-          _userDetails=project.userProject;
-          return child;
-        },//locator<ProjectModel>(),
-        child: Column(children: [
-          search
-              ?  SearchWidget(
-            controller: controller,
-            onSearchTextChanged: onSearchTextChanged,
-            onPressed: () {
-              setState(() {
-                search=false;
-              });
-              controller.clear();
-              onSearchTextChanged('');
-            },
-          )
-              : Container(),
-          Expanded(
-              child: Container(
-                  height: MediaQuery.of(context).size.height / 1.49,
-                  child: ListView.builder(
-                      itemCount: _searchResult.length != 0 ||
-                              controller.text.isNotEmpty
-                          ? _searchResult.length
-                          : _userDetails.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                            onTap:() =>goToSecondScreen(project: _userDetails[index]),
-                            child: CardListWidget(
-                              countName: 'tasks',
-                              countNumber: Text(
-                                  '${_userDetails[index].noOfTask == null ? 0 : _userDetails[index].noOfTask}',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight:
-                                      FontWeight
-                                          .bold)),
-                              titelCollunm: Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      _searchResult.length != 0 ||
-                                          controller
-                                              .text.isNotEmpty
-                                          ? _searchResult[index].name
-                                          : _userDetails[index].name,
-                                      style: MyTheme.bodyText1,
-                                    ),
-                                    // dense: true,
-                                    SizedBox(height: 6),
-                                    Container(
-                                        child: SubTitelWidget(
-                                            child: ContentApp(
-                                              style: MyTheme.bodyText2,
-                                              code: 'progectManeger',
-                                            ),
-                                            title:":  ${_searchResult.length != 0 || controller.text.isNotEmpty ? _searchResult[index].managerName : _userDetails[index].managerName == null ? '' : _userDetails[index].managerName}")
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
+    //return Consumer<ProjectModel>(builder: (context, project,child) {_userDetails=project.userProject;
+          return Column(children: [
+              SafeArea(
+                child: Material(
+                  elevation: 2.0,
+                  color:MyTheme.kPrimaryColorVariant,
+                  child:  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                          child: ContentApp(code: 'projectTitle',style: MyTheme.kAppTitle),
+                        ),//TextStyle(fontSize: 32,fontWeight: FontWeight.bold),),
+                        Container(
+                          //padding: EdgeInsets.only(left: 8,right: 8,top: 2,bottom: 2),
+                          // height: 30,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            // color: Colors.amber[50],
+                          ),
+                          child: TextButton(
 
-                         );
-                      })))
-        ]));
-  }
+                            //on: Icons.chat_outlined,
+                            onPressed: () {
+                              setState(() {
+                                search=search?false:true;
+                              });
+                            },
+                            child: Row(
+                              children: <Widget>[
+                                Icon(Icons.search_rounded,color: Colors.white,size: 30),
+                                // SizedBox(width: 2,),
+                                // ContentApp(code: 'addNew',style: TextStyle( fontSize: 14,fontWeight: FontWeight.bold, color: MyTheme.kUnreadChatBG),),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              search?  SearchWidget(
+                controller: controller,
+                onSearchTextChanged: onSearchTextChanged,
+                onPressed: () {
+                  setState(() {
+                    search = false;
+
+                  });
+                  controller.clear();
+                  onSearchTextChanged('');
+                },
+              ):Container(),
+           Expanded(child:
+                  _userDetails==null?Container():
+
+                    Container(
+                      margin: EdgeInsets.zero,
+                      //color: Colors.red,
+                        height:MediaQuery.of(context).size.height,
+                        child: ListView.builder(
+                            padding: EdgeInsets.only(top: 8),
+
+                            itemCount: _searchResult.length != 0 ||
+                                controller.text.isNotEmpty
+                                ? _searchResult.length
+                                : _userDetails.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(onTap:() =>goToSecondScreen(project: _userDetails[index]),
+                                  child: CardListWidget(
+                                    countName: 'tasks',
+                                    countNumber: Text(
+                                        '${_userDetails[index].noOfTask == null ? 0 : _userDetails[index].noOfTask}',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold)),
+                                    titelCollunm: Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            _searchResult.length != 0 ||
+                                                controller
+                                                    .text.isNotEmpty
+                                                ? _searchResult[index].name
+                                                : _userDetails[index].name,
+                                            style: MyTheme.bodyText1,
+                                          ),
+                                          // dense: true,
+                                          SizedBox(height: 6),
+                                          Container(
+                                              child: SubTitelWidget(
+                                                  child: ContentApp(
+                                                    style: MyTheme.bodyText2,
+                                                    code: 'progectManeger',
+                                                  ),
+                                                  title:":  ${_searchResult.length != 0 || controller.text.isNotEmpty ? _searchResult[index].managerName : _userDetails[index].managerName == null ? '' : _userDetails[index].managerName}")
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ));
+                            })),
+               )
+
+            ]);
+     // );// _userDetails?Container(): child;
+      //  },
+        //locator<ProjectModel>(),
+  //);
+ }
 }

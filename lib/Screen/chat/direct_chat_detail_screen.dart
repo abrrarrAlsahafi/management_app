@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:management_app/Screen/chat/chat_info.dart';
-import 'package:management_app/bottom_bar.dart';
 import 'package:management_app/generated/I10n.dart';
 import 'package:management_app/model/channal.dart';
 import 'package:management_app/model/massege.dart';
@@ -13,13 +12,14 @@ import 'package:provider/provider.dart';
 import '../../app_theme.dart';
 import 'chat_message_tile.dart';
 
+// ignore: must_be_immutable
 class MyDirectChatDetailPage extends StatefulWidget {
   var mid;
   final member;
   final title;
   final chatDetils; //chat object
   final currentUser;
-  final newChat;
+  var newChat;
   final isChat;
 
   // final ischatGroup;
@@ -46,7 +46,7 @@ bool addnewChat = false;
 class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
   final double minValue = 8.0;
   final double iconSize = 28.0;
-  bool _disposed = false;
+  //bool _disposed = false;
   List<Massege> myMessages = [];
   FocusNode _focusNode;
   TextEditingController _txtController = TextEditingController();
@@ -56,8 +56,9 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
   Timer timer;
   Chat newChatRom;
   String message = '';
-  List m =[];
+  List m = [];
   int uid;
+  var nMessage = '';
 
   checkMember() {
     uid = Provider.of<UserModel>(context, listen: false).user.uid;
@@ -71,22 +72,24 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
     }
     return m;
   }
+
   DateTime time = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    if (widget.newChat == false && (widget.isChat)) {
+    if (widget.newChat && (widget.isChat)) {
       getMasseges();
     }
     if (widget.newChat && widget.isChat == false) {
       createGroup();
       // setState(() {  addnewChat = true;});
     } else {
-     /* Timer(Duration(seconds: -1), () {
+      getMasseges();
+      /* Timer(Duration(seconds: -1), () {
         if (!_disposed) {
-          getMasseges();
+
 
         setState(() {
             time = time.add(Duration(seconds: 1));
@@ -94,14 +97,20 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
         }
       });*/
 
-     // print('myMessages $myMessages');
+      // print('myMessages $myMessages');
 
       //myMessages = Provider.of<ChatModel>(context, listen: false).chatMasseges( widget.mid);
-     // newDirctMassege();
+      // newDirctMassege();
 
       timer = Timer.periodic(Duration(seconds: 5), (Timer t) {
-       // getMasseges();
-        newDirctMassege();
+     //   print("messge $message");
+        // getMasseges();
+        if(widget.newChat || widget.mid==null) {
+
+        }
+        else {
+          newDirctMassege();
+        }
         /*  if (//Provider.of<NewMessagesModel>(context, listen: false).newMessages.totalNewMessages >
         totalMessges>    0) {
 
@@ -116,36 +125,33 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
   void dispose() {
     super.dispose();
     timer?.cancel();
-   // myMessages.clear();
+    // myMessages.clear();
 
-    _disposed = true;
+   // _disposed = true;
   }
 
   getMasseges() async {
-
     if (Provider.of<NewMessagesModel>(context, listen: false)
             .newMessages
             .totalNewMessages >
         0) {
       newDirctMassege();
-
-    } else if(Provider.of<ChatModel>(context, listen: false)
-        .chatMasseges(widget.mid)==null){
+    } else if (Provider.of<ChatModel>(context, listen: false)
+            .chatMasseges(widget.mid) ==
+        null) {
       myMessages = await Provider.of<MassegesContent>(context, listen: false)
           .getMassegesContext(widget.mid);
       setState(() {});
-    }
-    else{
-      myMessages=Provider.of<ChatModel>(context, listen: false)
-        .chatMasseges(widget.mid);
+    } else {
+      myMessages = Provider.of<ChatModel>(context, listen: false)
+          .chatMasseges(widget.mid);
     }
   }
 
   newDirctMassege() async {
-    myMessages = await Provider.of<MassegesContent>(context, listen: false)
-        .getMassegesContext(widget.mid);
-   // print('${myMessages.last.text}');
-   setState(() {});
+    myMessages = await Provider.of<MassegesContent>(context, listen: false).getMassegesContext(widget.mid);
+    // print('${myMessages.last.text}');
+    setState(() {});
   }
 
   var id;
@@ -156,7 +162,7 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
         //widget.member.id,
         name: widget.title,
         // widget.member.last.name + ',',
-        image: 'False',
+        //image: 'False',
         //widget.member.last.image,
         isChat: widget.isChat,
         adminId: uid,
@@ -166,6 +172,7 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
         .createChannal(newChatRom, widget.isChat, widget.isPrivetGroup);
     setState(() {
       widget.mid = id;
+      widget.newChat=false;
     });
 //print(widget.mid);
     // myMessages= await Provider.of<ChatModel>(context).chatMasseges(id);
@@ -181,18 +188,27 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
     newChatRom = Chat(
       members: checkMember(),
       //widget.member.id,
-      name: widget.member.name,
+      name:
+          '${Provider.of<UserModel>(context, listen: false).user.name}, ${widget.member.name}',
       image: widget.member.image,
       //lastDate: DateTime.now().toString(),
       isChat: true,
       adminId: uid,
-      //  lastMessage: ''
     );
 
-    widget.mid = await Provider.of<ChatModel>(context, listen: false)
-        .createChannal(newChatRom, widget.isChat, widget.isPrivetGroup);
+    id = await //Provider.of<ChatModel>(context, listen: false).createChannal
+        EmomApi().createNewChannal(
+            newChatRom.name,
+            newChatRom.members,
+            widget.isChat,
+            widget.isPrivetGroup); //(, widget.isChat, widget.isPrivetGroup);
     //await Provider.of<ChatModel>(context, listen: false).getChannalsHistory();
-    setState(() {});
+    print('create chat $message');
+    setState(() {
+      widget.mid = id;
+      widget.newChat=false;
+
+    });
   }
 
   void onTextFieldTapped() {}
@@ -213,14 +229,24 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
 
   Future<void> _sendMessage() async {
     if (message.isNotEmpty) {
+       print(message);
       if (widget.mid == null && widget.isChat) {
         createChat();
-        myMessages.insert(0, (Massege(message, DateTime.now(), 'Me', true)));
-        newmasseg = await EmomApi().postNewMessage(widget.mid, message);
+        print('id .. ${widget.mid} ${nMessage}, ${widget.isChat}');
+        setState(() {
+          nMessage = message;
+        });
+          myMessages.insert(0, (Massege(message, DateTime.now(), 'Me', true)));
+
+        Future.delayed(Duration(seconds: 1), () async {
+         /// print('id $newmasseg , ${widget.mid}, ${nMessage}');
+          newmasseg = await EmomApi().postNewMessage(widget.mid, nMessage);
+        });
       } else {
         myMessages.insert(0, (Massege(message, DateTime.now(), 'Me', true)));
         //print(myMessages.first);
         newmasseg = await EmomApi().postNewMessage(widget.mid, message);
+
         // getMasseges();
       }
 
@@ -293,9 +319,10 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('${widget.title}');
     return WillPopScope(
-      onWillPop: () async => _onBackPressed(),
-      /* child: Consumer<MassegesContent>(
+        onWillPop: () async => _onBackPressed(),
+        /* child: Consumer<MassegesContent>(
           builder: (context,directMassege,child)  {
             //print(directMassege.massegesContent);
             myMessages= directMassege.massegesContent;
@@ -303,20 +330,21 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
             return child;
           },
 */
-      child: Scaffold(
-        backgroundColor: const Color(0xfff3f6fc),
-        appBar: _myDetailAppBar(),
-        body:  FutureBuilder<void>(builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData ||   myMessages== null) {
-            // print('myMessages }');
-            return Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Color(0xff336699),
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            );
-          }
-         /* else{if (myMessages.isEmpty) {
+        child: Scaffold(
+            backgroundColor: const Color(0xfff3f6fc),
+            appBar: _myDetailAppBar(),
+            body:
+                FutureBuilder<void>(builder: (BuildContext context, snapshot) {
+              if (snapshot.hasData || myMessages == null) {
+                // print('myMessages }');
+                return Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Color(0xff336699),
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                );
+              }
+              /* else{if (myMessages.isEmpty) {
             return Center(
                 child: Column(
                   children: [
@@ -331,22 +359,17 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
                     ),
                   ],
                 ));
-          }*/ else {
-            return buildBody();
-          }
-        })
-
-      )
-      );
+          }*/
+              else {
+                return buildBody();
+              }
+            })));
 //    buildBody()));
   }
 
-
-
-  @override
   Widget _myDetailAppBar() {
     return AppBar(
-      actions: [
+    /*  actions: [
         GestureDetector(
             onTap: widget.newChat
                 ? () {}
@@ -355,8 +378,6 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
                             builder: (context) => ChatInfo(
                                   channalId: widget.mid,
                                   sender: widget.chatDetils,
-                                  //member: widget.member,
-                                  //  groupchat: widget.isChat,
                                 )))
                         .then((value) {
                       setState(() {});
@@ -368,8 +389,7 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
                   child: MembertImage(
                       item: widget.chatDetils == null
                           ? newChatRom
-                          : widget.chatDetils.image
-                          .toString())),
+                          : widget.chatDetils)),
             ))
       ],
       title: Row(
@@ -377,65 +397,116 @@ class _MyDirectChatDetailPageState extends State<MyDirectChatDetailPage> {
         children: [
           widget.title == null
               ? Expanded(
-                child: Text(widget.chatDetils.name,style: MyTheme.kAppTitle
-          ),
-              )
+                  child: Text(widget.chatDetils.name, style: MyTheme.heading2),
+                )
               : Expanded(
-                  child: Text('${widget.title}', style: MyTheme.kAppTitle
-                  ))
+                  child: Text('${widget.title}', style: MyTheme.kAppTitle))
           //TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold))),
         ],
       ),
       leading: GestureDetector(
-        onTap: () =>Navigator.pushReplacementNamed(context, "/a"),
+        onTap: () => Navigator.pushReplacementNamed(context, "/a"),
         child: Container(
           //  color: Colors.black,
-          height: 55,
-          width: 55,
+          // height: 55,
+         // width: 100,
           child: //: Navigator.of(context).pop(),
-              Icon(Icons.arrow_back_ios),
+              Row(
+                children: [
+                  Icon(Icons.arrow_back_ios, color: MyTheme.kPrimaryColorVariant,),
+                  MembertImage(
+                      item: widget.chatDetils == null
+                          ? newChatRom
+                          : widget.chatDetils)
+                ],
+              ),
         ),
-      ),
-      backgroundColor: const Color(0xff336699),
-    );
-  }
-
-
-  buildBody() {
-    // print("new chat ${widget.newChat}");
-    return GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      ),&*/
+      backgroundColor: MyTheme.kPrimaryColorVariant,
+      flexibleSpace: SafeArea(
         child: Container(
-          child: Column(
+          padding: EdgeInsets.only(right: 16),
+          child: Row(
             children: <Widget>[
+            //  IconButton(
+             //   onPressed:() => Navigator.pushReplacementNamed(context, "/a"),
+          //      icon: Icon(Icons.arrow_back,color: Colors.black,),
+            //  ),
+              SizedBox(width: 60,),
+              MembertImage(
+                  item: widget.chatDetils == null
+                      ? newChatRom
+                      : widget.chatDetils),
+              SizedBox(width: 12,),
               Expanded(
-                  child: ListView.builder(
-                      reverse: true,
-                      shrinkWrap: true,
-                      controller: _scrollController,
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      itemCount: myMessages.length,
-                      itemBuilder: (context, index) {
-                        final Massege message = myMessages[index];
-                        return MyMessageChatTile(
-                            datesend: message.date,
-                            msender: message.sender,
-                            isChat: widget.isChat,
-                            message: message,
-                            isCurrentUser: myMessages[index].isMine);
-                      })),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: _buildBottomSection(),
-              )
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("${widget.title==null? widget.chatDetils.name:widget.title}",style: TextStyle(color: Colors.white, fontSize: 16 ,fontWeight: FontWeight.w600),),
+                    SizedBox(height: 6,),
+                  //  Text("Online",style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
+                  ],
+                ),
+              ),
+           widget.isChat?Container(): TextButton(
+                  onPressed: () => Navigator.of(context)
+                      .push(MaterialPageRoute(
+                      builder: (context) => ChatInfo(
+                        channalId: widget.mid,
+                        sender: widget.chatDetils,
+                      )))
+                      .then((value) {
+                    setState(() {});
+                  }),
+                  child: Icon(Icons.more_vert_sharp,color: Colors.white,)),
             ],
           ),
         ),
+      ),
+
+    );
+  }
+
+  buildBody() {
+    //print("is chat ${widget.isChat}");
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+                child: ListView.builder(
+                    reverse: true,
+                    shrinkWrap: true,
+                    controller: _scrollController,
+                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                    itemCount: myMessages.length,
+                    itemBuilder: (context, index) {
+                      final Massege message = myMessages[index];
+//print("  message.date ${message.date}");
+
+                      return MyMessageChatTile(
+                          datesend: message.date,
+                          msender: message.sender,
+                          isChat: widget.isChat,
+                          message: message,
+                          isCurrentUser: myMessages[index].isMine);
+                    })),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _buildBottomSection(),
+            )
+          ],
+        ),
+      ),
     );
   }
 
   _onBackPressed() {
-    if(widget.newChat) Navigator.pushReplacementNamed(context, "/root");
-    else Navigator.pushReplacementNamed(context, "/root");
+    if (widget.newChat)
+      Navigator.pushReplacementNamed(context, "/root");
+    else
+      Navigator.pushReplacementNamed(context, "/root");
   }
 }

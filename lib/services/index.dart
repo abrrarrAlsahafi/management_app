@@ -1,5 +1,9 @@
+import 'package:management_app/model/board.dart';
 import 'package:management_app/model/folowing.dart';
 import 'package:management_app/model/massege.dart';
+import 'package:management_app/model/note.dart';
+import 'package:management_app/model/project.dart';
+import 'package:management_app/model/sessions.dart';
 import 'package:management_app/model/task.dart';
 import 'package:management_app/model/user.dart';
 
@@ -16,12 +20,24 @@ abstract class BaseServices {
 
   Future<dynamic> login(context,{username, password});
   Future<void> logOut({username, password});
-  Future<dynamic> chatHistory(bool isFrist);
+  Future<dynamic> chatHistory();
   Future<List<Folowing>> getfollowingList();
   Future<List<Task>> getUserTask(id);
   Future<NewMessages> newMasseges();
   Future<void> assignTask();
-
+  Future<List<Massege>> getMassegesContext(var masgId);
+  Future<int> createTask({Task taskName, int projId});
+  Future<List<Project>> getMyProjects();
+  Future<List<Boards>> getMyBoards();
+  Future<void> addMembers(channelId, memberId);
+  Future<void> logNote({message, taskId});
+  Future<List<Note>> veiwLogNote({tid});
+  Future<List<Sessions>> getBoardSessions({boardId});
+  Future<dynamic> actionSign({sessionId});
+  Future<dynamic> actionDiscreet({sessionId, discreet});
+  Future<dynamic> sendToManager({sessionId});
+  Future<dynamic> sendToMembers({sessionId});
+  Future<dynamic> toApproved({sessionId});
 }
 
 class Services implements BaseServices {
@@ -56,8 +72,8 @@ class Services implements BaseServices {
   }
 
   @override
-  Future<dynamic> chatHistory(bool isFrist) {
-    throw serviceApi.chatHistory(isFrist);
+  Future<dynamic> chatHistory() {
+    throw serviceApi.chatHistory();
   }
 
   @override
@@ -87,5 +103,83 @@ class Services implements BaseServices {
   Future<void> assignTask() {
     // TODO: implement assignTask
     throw serviceApi.assignTask();
+  }
+
+  @override
+  Future toApproved({sessionId}) {
+    // TODO: implement toApproved
+    throw serviceApi.toApproved();
+  }
+
+  @override
+  Future actionDiscreet({sessionId, discreet}) {
+    // TODO: implement actionDiscreet
+    throw UnimplementedError();
+  }
+
+  @override
+  Future actionSign({sessionId}) {
+    // TODO: implement actionSign
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> addMembers(channelId, memberId) {
+    // TODO: implement addMembers
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<int> createTask({Task taskName, int projId}) {
+    // TODO: implement createTask
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Sessions>> getBoardSessions({boardId}) {
+    // TODO: implement getBoardSessions
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Massege>> getMassegesContext(masgId) {
+    // TODO: implement getMassegesContext
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Boards>> getMyBoards() {
+    // TODO: implement getMyBoards
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Project>> getMyProjects() {
+    // TODO: implement getMyProjects
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> logNote({message, taskId}) {
+    // TODO: implement logNote
+    throw UnimplementedError();
+  }
+
+  @override
+  Future sendToManager({sessionId}) {
+    // TODO: implement sendToManager
+    throw UnimplementedError();
+  }
+
+  @override
+  Future sendToMembers({sessionId}) {
+    // TODO: implement sendToMembers
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Note>> veiwLogNote({tid}) {
+    // TODO: implement veiwLogNote
+    throw UnimplementedError();
   }
 }
